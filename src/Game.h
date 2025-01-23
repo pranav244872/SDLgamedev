@@ -3,12 +3,17 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <glm/glm.hpp>
+
+const int FPS = 30;
+const int MILLISECS_PER_FRAME = 1000 / FPS;
 
 class Game
 {
 	private:
 		bool isRunning;
 		SDL_Window* window;
+		int millisecsPreviousFrame = 0;
 		SDL_Renderer* renderer;
 	public:
 		Game();

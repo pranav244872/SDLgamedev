@@ -33,7 +33,7 @@ void Game::Initialize()
 			SDL_WINDOWPOS_CENTERED,
 			windowWidth,
 			windowHeight,
-			SDL_WINDOW_VULKAN
+			SDL_WINDOW_FULLSCREEN	
 	);
 	if (!window) 
 	{
@@ -52,6 +52,7 @@ void Game::Initialize()
 
 void Game::Run()
 {
+	Setup();
 	while(isRunning) {
 		ProcessInput();
 		Update();
@@ -81,9 +82,32 @@ void Game::ProcessInput()
 	}
 }
 
+glm::vec2 playerPosition;
+glm::vec2 playerVelocity;
+
+void Game::Setup()
+{
+	playerPosition = glm::vec2(10.0, 20.0);
+	playerVelocity = glm::vec2(30.0, 0.0);
+}
+
 void Game::Update()
 {
-	// TODO: Update game objects
+	// If we are too fast, waste some time until we reach the MILLISECS_PER_FRAME
+	int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - millisecsPreviousFrame);
+	if (timeToWait > 0 && timeToWait <= MILLISECS_PER_FRAME)
+	{
+		SDL_Delay(timeToWait);
+	}
+
+	// The difference in ticks since the last frame, converted to seconds
+	double deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0f;
+
+	// Store the current frame time
+	millisecsPreviousFrame = SDL_GetTicks();
+
+	playerPosition.x += playerVelocity.x * deltaTime;
+	playerPosition.y += playerVelocity.y * deltaTime;
 }
 
 void Game::Render()
@@ -97,7 +121,11 @@ void Game::Render()
 	SDL_FreeSurface(surface);
 	
 	// What is the destination rectangle that we want to place our texture
-	SDL_Rect dstRect = {10, 10, 32, 32};
+	SDL_Rect dstRect = {	
+		static_cast<int>(playerPosition.x),
+		static_cast<int>(playerPosition.y), 
+		32, 32
+	};
 	SDL_RenderCopy(renderer, texture, NULL, &dstRect);
 	SDL_DestroyTexture(texture);
 
