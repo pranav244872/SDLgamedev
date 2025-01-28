@@ -4,6 +4,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
+#include <iostream>
+#include "../ECS/ECS.h"
+#include "../Logger/Logger.h"
 
 const int FPS = 30;
 const int MILLISECS_PER_FRAME = 1000 / FPS;

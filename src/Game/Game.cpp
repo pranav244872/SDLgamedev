@@ -1,6 +1,4 @@
-#include "../Logger/Logger.h"
 #include "Game.h"
-#include <iostream>
 
 Game::Game()
 {
@@ -22,19 +20,19 @@ void Game::Initialize()
 		Logger::Err("Error Initializing SDL.");
 		return;
 	}
-	
+
 	// Here we are getting our computers display width and display height through SDL function
 	SDL_DisplayMode displayMode;
 	SDL_GetCurrentDisplayMode(0, &displayMode);
 	windowWidth = displayMode.w;
 	windowHeight = displayMode.h;
 	window = SDL_CreateWindow(
-			NULL, 
-			SDL_WINDOWPOS_CENTERED, 
-			SDL_WINDOWPOS_CENTERED,
-			windowWidth,
-			windowHeight,
-			SDL_WINDOW_FULLSCREEN	
+		NULL, 
+		SDL_WINDOWPOS_CENTERED, 
+		SDL_WINDOWPOS_CENTERED,
+		windowWidth,
+		windowHeight,
+		SDL_WINDOW_FULLSCREEN	
 	);
 	if (!window) 
 	{
@@ -83,13 +81,14 @@ void Game::ProcessInput()
 	}
 }
 
-glm::vec2 playerPosition;
-glm::vec2 playerVelocity;
 
 void Game::Setup()
 {
-	playerPosition = glm::vec2(10.0, 20.0);
-	playerVelocity = glm::vec2(30.0, 0.0);
+	// TODO: 
+	// Entity tank = registry.CreateEntity();
+	// tank.addComponent<TransformComponent>();
+	// tank.addComponent<BoxColliderComponent>();
+	// tank.addComponent<SpriteComponent>("./assets/images/tank.png");
 }
 
 void Game::Update()
@@ -107,29 +106,19 @@ void Game::Update()
 	// Store the current frame time
 	millisecsPreviousFrame = SDL_GetTicks();
 
-	playerPosition.x += playerVelocity.x * deltaTime;
-	playerPosition.y += playerVelocity.y * deltaTime;
+	// TODO:
+	// MovementSystem.Update();
+	// CollisionSystem.Update();
+	// DamageSystem.Update();
+
 }
 
 void Game::Render()
 {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
-	
+	// TODO: Render game objects
 	// Load a png texture
-	SDL_Surface* surface = IMG_Load("./assets/images/tank-tiger-right.png");
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_FreeSurface(surface);
-	
-	// What is the destination rectangle that we want to place our texture
-	SDL_Rect dstRect = {	
-		static_cast<int>(playerPosition.x),
-		static_cast<int>(playerPosition.y), 
-		32, 32
-	};
-	SDL_RenderCopy(renderer, texture, NULL, &dstRect);
-	SDL_DestroyTexture(texture);
-
 	SDL_RenderPresent(renderer);
 }
 
