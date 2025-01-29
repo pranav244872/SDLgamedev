@@ -7,6 +7,9 @@
 #include <iostream>
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
+#include "../ECS/ECS.h"
+#include "../Components/TransformComponent.h"
+#include "../Components/RigidBodyComponent.h"
 
 const int FPS = 30;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
@@ -18,6 +21,8 @@ class Game
 		SDL_Window* window;
 		int millisecsPreviousFrame = 0;
 		SDL_Renderer* renderer;
+		
+		std::unique_ptr<Registry> registry;
 	public:
 		Game();
 		~Game();

@@ -3,6 +3,7 @@
 Game::Game()
 {
 	isRunning = false;
+	registry = std::make_unique<Registry>();
 	Logger::Log("Game Constructor Called");
 }
 
@@ -84,11 +85,17 @@ void Game::ProcessInput()
 
 void Game::Setup()
 {
-	// TODO: 
-	// Entity tank = registry.CreateEntity();
-	// tank.addComponent<TransformComponent>();
-	// tank.addComponent<BoxColliderComponent>();
-	// tank.addComponent<SpriteComponent>("./assets/images/tank.png");
+	// create an entity
+	Entity tank = registry->CreateEntity();
+
+	// Add some components to that entity
+	tank.AddComponent<TransformComponent>
+		(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.AddComponent<RigidBodyComponent>
+		(glm::vec2(50.0, 0));
+
+	// Remove a component from the entity
+	tank.RemoveComponent<TransformComponent>();
 }
 
 void Game::Update()

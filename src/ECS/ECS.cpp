@@ -7,19 +7,19 @@ long unsigned int Entity::getId() const
 	return id;
 }
 
-void System::AddEntityToSystem(Entity* entity)
+void System::AddEntityToSystem(std::shared_ptr<Entity> entity)
 {
 	entities.push_back(entity);
 
 }
 
-void System::RemoveEntityFromSystem(Entity* entity)
+void System::RemoveEntityFromSystem(std::shared_ptr<Entity> entity)
 {
 	entities.erase(
 		std::remove_if(
 			entities.begin(), 
 			entities.end(),
-			[&entity](Entity* other)
+			[&entity](std::shared_ptr<Entity> other)
 			{
 				return *entity == *other;
 			}
@@ -28,7 +28,7 @@ void System::RemoveEntityFromSystem(Entity* entity)
 	);
 }
 
-const std::vector<Entity*>& System::GetSystemEntities() const
+const std::vector<std::shared_ptr<Entity>>& System::GetSystemEntities() const
 {
 	return entities;
 }
@@ -45,8 +45,38 @@ Entity& Registry::CreateEntity()
 	{
 		entityComponentSignatures.resize(entityId + 1);
 	}
-	Entity* entity = new Entity(entityId);
+	std::shared_ptr<Entity> entity = std::make_shared<Entity>(entityId);
+	entity->registry = this;
 	entitiesToBeAdded.insert(entity);
 	Logger::Log("Entity created with id = " + std::to_string(entityId));
 	return *entity;
+}
+
+void Registry::AddEntityToSystems(std::shared_ptr<Entity> entity)
+{
+	const auto entityId = entity->getId();
+	const auto& entityComponentSignature = entityComponentSignatures[entityId];
+
+	// Loop all the systems
+	for (auto& system: systems)
+	{
+		const auto& systemComponentSignature = system.second->GetComponentSignature();
+		bool isInterested = (entityComponentSignature & systemComponentSignature) == systemComponentSignature;
+		if (isInterested)
+		{
+			system.second->AddEntityToSystem(entity);
+		}
+	}
+}
+
+void Registry::Update()
+{
+	// Add the entites that are waiting to be created to the active Systems
+	for (auto entity: entitiesToBeAdded)
+	{
+		AddEntityToSystems(entity);
+	}
+	entitiesToBeAdded.clear();
+
+	// Remove the entities that are waiting to be removed
 }
