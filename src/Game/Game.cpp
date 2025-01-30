@@ -4,6 +4,7 @@ Game::Game()
 {
 	isRunning = false;
 	registry = std::make_unique<Registry>();
+	assetStore = std::make_unique<AssetStore>();
 	Logger::Log("Game Constructor Called");
 }
 
@@ -85,6 +86,18 @@ void Game::ProcessInput()
 
 void Game::Setup()
 {
+	//Add the systems that need to be processed in our game
+	registry->AddSystem<MovementSystem>();
+	registry->AddSystem<RenderSystem>();
+
+	// Adding assets to the asset store
+	assetStore->AddTexture
+		(
+			renderer,
+			"tank-image", 
+			"/home/pranav/del/SDLgamedev/assets/images/tank-tiger-left.png"
+		);
+
 	// create an entity
 	Entity tank = registry->CreateEntity();
 
@@ -92,10 +105,8 @@ void Game::Setup()
 	tank.AddComponent<TransformComponent>
 		(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
 	tank.AddComponent<RigidBodyComponent>
-		(glm::vec2(50.0, 0));
-
-	// Remove a component from the entity
-	tank.RemoveComponent<TransformComponent>();
+		(glm::vec2(10.0, 0));
+	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 0, 0);
 }
 
 void Game::Update()
@@ -113,19 +124,22 @@ void Game::Update()
 	// Store the current frame time
 	millisecsPreviousFrame = SDL_GetTicks();
 
-	// TODO:
-	// MovementSystem.Update();
-	// CollisionSystem.Update();
-	// DamageSystem.Update();
+	// Ask all the systems to update
+	registry->GetSystem<MovementSystem>().Update(deltaTime);
 
+	// Update the registry to process the entities that are waiting to be 
+	// created/deleted
+	registry->Update();
 }
 
 void Game::Render()
 {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
-	// TODO: Render game objects
-	// Load a png texture
+
+	// Invoke all the systems that need to render
+	registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+
 	SDL_RenderPresent(renderer);
 }
 

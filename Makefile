@@ -11,7 +11,8 @@ INCLUDE_PATH = -I "./libs/"
 SRC_FILES = ./src/*.cpp \
 	    ./src/Game/*.cpp \
 	    ./src/Logger/*.cpp \
-		./src/ECS/*.cpp
+		./src/ECS/*.cpp \
+		./src/AssetStore/*.cpp
 
 LINKER_FILES = -l SDL2 -l SDL2_image -l SDL2_ttf -l lua5.4
 OBJ_NAME = gameengine

@@ -8,8 +8,12 @@
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
 #include "../ECS/ECS.h"
+#include "../AssetStore/AssetStore.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
+#include "../Components/SpriteComponent.h"
+#include "../Systems/MovementSystem.h"
+#include "../Systems/RenderSystem.h"
 
 const int FPS = 30;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
@@ -23,6 +27,7 @@ class Game
 		SDL_Renderer* renderer;
 		
 		std::unique_ptr<Registry> registry;
+		std::unique_ptr<AssetStore> assetStore;
 	public:
 		Game();
 		~Game();
