@@ -5,6 +5,8 @@
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
 #include "../ECS/ECS.h"
@@ -12,10 +14,14 @@
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
+#include "../Components/AnimationComponent.h"
+#include "../Components/BoxColliderComponent.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
+#include "../Systems/AnimationSystem.h"
+#include "../Systems/CollisionSystem.h"
 
-const int FPS = 30;
+const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
 
 class Game
@@ -34,6 +40,7 @@ class Game
 		void Initialize();
 		void Run();
 		void ProcessInput();
+		void LoadLevel(int level);
 		void Setup();
 		void Update();
 		void Render();
