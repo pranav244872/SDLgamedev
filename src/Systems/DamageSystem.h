@@ -1,7 +1,7 @@
 #ifndef DAMAGESYSTEM_H
 #define DAMAGESYSTEM_H
 
-#include "../ECS/ECS.cpp"
+#include "../ECS/ECS.h"
 #include "../EventBus/EventBus.h"
 #include "../Events/CollisionEvent.h"
 #include "../Components/BoxColliderComponent.h"
@@ -23,7 +23,7 @@ class DamageSystem: public System
 		{
 			Logger::Log
 			(
-				"The Damage system revieved an event collision between entities " +
+				"The Damage system recieved an event collision between entities " +
 				std::to_string(event.a->getId()) +
 				" and "  +
 				std::to_string(event.b->getId())

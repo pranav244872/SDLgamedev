@@ -9,7 +9,6 @@
 #include <sstream>
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
-#include "../ECS/ECS.h"
 #include "../AssetStore/AssetStore.h"
 #include "../EventBus/EventBus.h"
 #include "../Components/TransformComponent.h"
