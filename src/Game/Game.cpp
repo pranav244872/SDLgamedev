@@ -3,8 +3,10 @@
 Game::Game()
 {
 	isRunning = false;
+	isDebugMode = false;
 	registry = std::make_unique<Registry>();
 	assetStore = std::make_unique<AssetStore>();
+	eventBus = std::make_unique<EventBus>();
 	Logger::Log("Game Constructor Called");
 }
 
@@ -78,6 +80,10 @@ void Game::ProcessInput()
 				{
 					isRunning = false;
 				}
+				else if (sdlEvent.key.keysym.sym == SDLK_d)
+				{
+					isDebugMode = !isDebugMode;
+				}
 				break;
 		}
 	}
@@ -127,13 +133,13 @@ void CreateTileEntities
             int sourceX = (num % 10) * tileSize;
             int sourceY = (num / 10) * tileSize;
             
-            Entity tile = registry->CreateEntity();
-            tile.AddComponent<TransformComponent>
+			std::shared_ptr<Entity> tile = registry->CreateEntity();
+            tile->AddComponent<TransformComponent>
 				(
 					glm::vec2(transformPosX*scale, transformPosY*scale), 
 					glm::vec2(scale, scale), 0.0f
 				);
-            tile.AddComponent<SpriteComponent>
+            tile->AddComponent<SpriteComponent>
 				(
 					"jungle-tilemap", 
 					tileSize, tileSize, 
@@ -155,6 +161,8 @@ void Game::LoadLevel(int level)
 	registry->AddSystem<RenderSystem>();
 	registry->AddSystem<AnimationSystem>();
 	registry->AddSystem<CollisionSystem>();
+	registry->AddSystem<CollisionDebug>();
+	registry->AddSystem<DamageSystem>();
 
 	// Adding assets to the asset store
 	assetStore->AddTexture
@@ -198,44 +206,44 @@ void Game::LoadLevel(int level)
         CreateTileEntities(registry, tilemap, 3);
     }
 
-	Entity chopper = registry->CreateEntity();
-	chopper.AddComponent<TransformComponent>
+	std::shared_ptr<Entity> chopper = registry->CreateEntity();
+	chopper->AddComponent<TransformComponent>
 		(glm::vec2(10.0, 500.0), glm::vec2(2.0, 2.0), 0.0);
-	chopper.AddComponent<RigidBodyComponent>
+	chopper->AddComponent<RigidBodyComponent>
 		(glm::vec2(0.0, 0.0));
-	chopper.AddComponent<SpriteComponent>
+	chopper->AddComponent<SpriteComponent>
 		("chopper-image", 32, 32, 0, 0, 2); 
-	chopper.AddComponent<AnimationComponent>
+	chopper->AddComponent<AnimationComponent>
 		(2, 20, true);
 
-	Entity radar = registry->CreateEntity();
-	radar.AddComponent<TransformComponent>
+	std::shared_ptr<Entity> radar = registry->CreateEntity();
+	radar->AddComponent<TransformComponent>
 		(glm::vec2(windowWidth - 74, 10), glm::vec2(1.0, 1.0), 0.0);
-	radar.AddComponent<RigidBodyComponent>
+	radar->AddComponent<RigidBodyComponent>
 		(glm::vec2(0.0, 0.0));
-	radar.AddComponent<SpriteComponent>
+	radar->AddComponent<SpriteComponent>
 		("radar-image", 64, 64, 0, 0, 3);
-	radar.AddComponent<AnimationComponent>
+	radar->AddComponent<AnimationComponent>
 		(8, 5, true);
 
-	Entity tank = registry->CreateEntity();
-	tank.AddComponent<TransformComponent>
+	std::shared_ptr<Entity> tank = registry->CreateEntity();
+	tank->AddComponent<TransformComponent>
 		(glm::vec2(500.0, 30.0), glm::vec2(2.0, 2.0), 0.0);
-	tank.AddComponent<RigidBodyComponent>
+	tank->AddComponent<RigidBodyComponent>
 		(glm::vec2(-50.0, 0));
-	tank.AddComponent<SpriteComponent>
+	tank->AddComponent<SpriteComponent>
 		("tank-image", 32, 32, 0, 0, 1);
-	tank.AddComponent<BoxColliderComponent>
+	tank->AddComponent<BoxColliderComponent>
 		(32, 32, glm::vec2(0, 0));
 	
-	Entity truck = registry->CreateEntity();
-	truck.AddComponent<TransformComponent>
+	std::shared_ptr<Entity> truck = registry->CreateEntity();
+	truck->AddComponent<TransformComponent>
 		(glm::vec2(10.0, 30.0), glm::vec2(2.0, 2.0), 0.0);
-	truck.AddComponent<RigidBodyComponent>
+	truck->AddComponent<RigidBodyComponent>
 		(glm::vec2(50, 0));
-	truck.AddComponent<SpriteComponent>
+	truck->AddComponent<SpriteComponent>
 		("truck-image", 32, 32, 0, 0, 1);
-	truck.AddComponent<BoxColliderComponent>
+	truck->AddComponent<BoxColliderComponent>
 		(32, 32, glm::vec2(0, 0));
 }
 
@@ -259,15 +267,20 @@ void Game::Update()
 	// Store the current frame time
 	millisecsPreviousFrame = SDL_GetTicks();
 
-	// Ask all the systems to update
-	registry->GetSystem<MovementSystem>().Update(deltaTime);
+	// Reset all event handlers for the current frame
+	eventBus->Reset();
+
+	// Perform the subscription of the events for all systems
+	registry->GetSystem<DamageSystem>().SubscribeToEvents(eventBus);
 
 	// Update the registry to process the entities that are waiting to be 
 	// created/deleted
 	registry->Update();
-	registry->GetSystem<AnimationSystem>().Update();
 
-	registry->GetSystem<CollisionSystem>().Update();
+	// Ask all the systems to update
+	registry->GetSystem<MovementSystem>().Update(deltaTime);
+	registry->GetSystem<AnimationSystem>().Update();
+	registry->GetSystem<CollisionSystem>().Update(eventBus);
 }
 
 void Game::Render()
@@ -277,6 +290,7 @@ void Game::Render()
 
 	// Invoke all the systems that need to render
 	registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+	registry->GetSystem<CollisionDebug>().Update(renderer, isDebugMode);
 
 	SDL_RenderPresent(renderer);
 }

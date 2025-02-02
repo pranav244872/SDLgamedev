@@ -1,7 +1,6 @@
 #ifndef ECS_H
 #define ECS_H
 
-#include "../Logger/Logger.h"
 #include <bitset>
 #include <vector>
 #include <algorithm>
@@ -9,6 +8,8 @@
 #include <typeindex>
 #include <set>
 #include <memory>
+#include <deque>
+#include "../Logger/Logger.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Signature
@@ -44,13 +45,14 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 /// Entity Class
 ////////////////////////////////////////////////////////////////////////////////
-class Entity
+class Entity : public std::enable_shared_from_this<Entity>
 {
 private:
 	long unsigned int id;
 public:
 	Entity(int id): id(id) {};
 	Entity(const Entity& entity) = default;
+	void Kill();
 	long unsigned int getId() const;
 
 	Entity& operator = (const Entity& other) = default;
@@ -153,6 +155,9 @@ private:
 	// Map of active system [index = system typeId]
 	std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
 
+	// List of free entity ids that were previously removed
+	std::deque<long unsigned int> freeIds;
+
 public:
 	Registry() = default;
 
@@ -161,8 +166,8 @@ public:
 	void Update();
 	
 	// Entity Management
-	Entity& CreateEntity();	
-	void KillEntity(Entity& entity);
+	std::shared_ptr<Entity> CreateEntity();	
+	void KillEntity(std::shared_ptr<Entity> entity);
 
 	// Component Management
 	// Adds a Component<T> to an entity
@@ -195,6 +200,7 @@ public:
 	// Checks the component signature of an entity and add the entity to the systems
 	// that are interested in it
 	void AddEntityToSystems(std::shared_ptr<Entity> entity);
+	void RemoveEntityFromSystems(std::shared_ptr<Entity> entity);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
