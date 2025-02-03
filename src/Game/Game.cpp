@@ -6,7 +6,7 @@ Game::Game()
 	isDebugMode = false;
 	registry = std::make_unique<Registry>();
 	assetStore = std::make_unique<AssetStore>();
-	eventBus = std::make_unique<EventBus>();
+	events = std::make_shared<EventMap>();
 	Logger::Log("Game Constructor Called");
 }
 
@@ -160,9 +160,8 @@ void Game::LoadLevel(int level)
 	registry->AddSystem<MovementSystem>();
 	registry->AddSystem<RenderSystem>();
 	registry->AddSystem<AnimationSystem>();
-	registry->AddSystem<CollisionSystem>();
-	registry->AddSystem<CollisionDebug>();
-	registry->AddSystem<DamageSystem>();
+	registry->AddSystem<CollisionSystem>(events);
+	registry->AddSystem<CollisionDebug>(events);
 
 	// Adding assets to the asset store
 	assetStore->AddTexture
@@ -202,9 +201,9 @@ void Game::LoadLevel(int level)
 		(
 			"/home/pranav/del/SDLgamedev/assets/tilemaps/jungle.map"
 		);
-    if (!tilemap.empty()) { // Only create entities if tilemap is valid
-        CreateTileEntities(registry, tilemap, 3);
-    }
+	   if (!tilemap.empty()) { // Only create entities if tilemap is valid
+	       CreateTileEntities(registry, tilemap, 3);
+	   }
 
 	std::shared_ptr<Entity> chopper = registry->CreateEntity();
 	chopper->AddComponent<TransformComponent>
@@ -267,11 +266,8 @@ void Game::Update()
 	// Store the current frame time
 	millisecsPreviousFrame = SDL_GetTicks();
 
-	// Reset all event handlers for the current frame
-	eventBus->Reset();
 
 	// Perform the subscription of the events for all systems
-	registry->GetSystem<DamageSystem>().SubscribeToEvents(eventBus);
 
 	// Update the registry to process the entities that are waiting to be 
 	// created/deleted
@@ -280,7 +276,7 @@ void Game::Update()
 	// Ask all the systems to update
 	registry->GetSystem<MovementSystem>().Update(deltaTime);
 	registry->GetSystem<AnimationSystem>().Update();
-	registry->GetSystem<CollisionSystem>().Update(eventBus);
+	registry->GetSystem<CollisionSystem>().Update();
 }
 
 void Game::Render()

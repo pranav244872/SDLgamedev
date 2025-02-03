@@ -1,10 +1,10 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-class Event
+struct Event
 {
-public:
 	Event() = default;
+	virtual ~Event() = default;
 };
 
 #endif

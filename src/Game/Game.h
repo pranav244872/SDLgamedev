@@ -9,8 +9,8 @@
 #include <sstream>
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
+#include "../Events/Event.h"
 #include "../AssetStore/AssetStore.h"
-#include "../EventBus/EventBus.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
@@ -21,7 +21,8 @@
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/CollisionSystem.h"
 #include "../Systems/CollisionDebug.h"
-#include "../Systems/DamageSystem.h"
+
+typedef std::unordered_map<std::type_index,std::vector<std::unique_ptr<Event>>> EventMap;
 
 const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
@@ -37,7 +38,8 @@ class Game
 		
 		std::unique_ptr<Registry> registry;
 		std::unique_ptr<AssetStore> assetStore;
-		std::unique_ptr<EventBus> eventBus;
+		std::shared_ptr<EventMap> events;
+		
 	public:
 		Game();
 		~Game();
