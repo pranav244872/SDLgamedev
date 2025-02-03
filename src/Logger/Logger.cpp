@@ -15,19 +15,29 @@ std::string Logger::getCurrentDateTime(const std::string& type)
     std::ostringstream oss;
     
     // Format the time in the desired format: [DD/Mon/YYYY HH:MM:SS]
-    oss << type << "["
+    oss << type << " ["
         << std::put_time(&local_time, "%d/%b/%Y %H:%M:%S") 
         << "] ";
     
     return oss.str();
 }
 
+// Helper function to wrap text in color
+std::string Logger::applyColor(const std::string& text, const std::string& color)
+{
+    return color + text + "\033[0m"; // Reset after the text
+}
+
 void Logger::Log(const std::string& message)
 {
-	std::cout << getCurrentDateTime("LOG") << message << std::endl;
+    std::string logMessage = getCurrentDateTime("LOG") + message;
+    std::string coloredMessage = applyColor(logMessage, "\033[32m"); // Green for logs
+    std::cout << coloredMessage << std::endl;
 }
 
 void Logger::Err(const std::string& message)
 {
-	std::cerr << getCurrentDateTime("ERR") << message << std::endl;
+    std::string errorMessage = getCurrentDateTime("ERR") + message;
+    std::string coloredMessage = applyColor(errorMessage, "\033[31m"); // Red for errors
+    std::cerr << coloredMessage << std::endl;
 }

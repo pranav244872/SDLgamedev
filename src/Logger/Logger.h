@@ -11,6 +11,11 @@
 class Logger
 {
 	public:
+		static std::string applyColor
+		(
+			const std::string& text, 
+			const std::string& color
+		);
 		static std::string getCurrentDateTime(const std::string& type);
 		static void Log(const std::string& message);
 		static void Err(const std::string& message);

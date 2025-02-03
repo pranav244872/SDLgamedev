@@ -16,11 +16,16 @@
 #include "../Components/SpriteComponent.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/BoxColliderComponent.h"
+#include "../Components/KeyBoardControlledComponent.h"
+#include "../Components/CameraFollowComponent.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/CollisionSystem.h"
 #include "../Systems/CollisionDebug.h"
+#include "../Systems/DamageSystem.h"
+#include "../Systems/KeyboardControlSystem.h"
+#include "../Systems/CameraMovementSystem.h"
 
 typedef std::unordered_map<std::type_index,std::vector<std::unique_ptr<Event>>> EventMap;
 
@@ -35,6 +40,7 @@ class Game
 		SDL_Window* window;
 		int millisecsPreviousFrame = 0;
 		SDL_Renderer* renderer;
+		SDL_Rect camera;
 		
 		std::unique_ptr<Registry> registry;
 		std::unique_ptr<AssetStore> assetStore;
@@ -52,8 +58,10 @@ class Game
 		void Render();
 		void Destroy();
 	
-		int windowWidth;
-		int windowHeight;
+		static int windowWidth;
+		static int windowHeight;
+		static int mapWidth;
+		static int mapHeight;
 };
 
 #endif

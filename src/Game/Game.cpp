@@ -1,5 +1,10 @@
 #include "Game.h"
 
+int Game::windowWidth;
+int Game::windowHeight;
+int Game::mapWidth;
+int Game::mapHeight;
+
 Game::Game()
 {
 	isRunning = false;
@@ -49,7 +54,12 @@ void Game::Initialize()
 	{
 		Logger::Err("Error creating SDL renderer");
 	}
-
+		
+	// Initialize the camera view with the entire screen area
+	camera.x = 0;
+	camera.y = 0;
+	camera.w = Game::windowWidth;
+	camera.h = Game::windowHeight;
 	isRunning = true;
 }
 
@@ -67,6 +77,15 @@ void Game::Run()
 // Checking for inputs
 void Game::ProcessInput()
 {
+	
+	// Clear all the key press events from previous frame
+	auto it = events->find(typeid(KeyPressEvent));
+	if (it != events->end()) {
+		it->second.clear();
+		events->erase(it);
+	}
+
+	// Handle Key presses
 	SDL_Event sdlEvent;
 	while (SDL_PollEvent(&sdlEvent))
 	{
@@ -84,6 +103,10 @@ void Game::ProcessInput()
 				{
 					isDebugMode = !isDebugMode;
 				}
+				// Emit a key press event
+				std::unique_ptr<KeyPressEvent> event = 
+				std::make_unique<KeyPressEvent>(sdlEvent.key.keysym.sym);
+				(*events)[typeid(KeyPressEvent)].push_back(std::move(event));
 				break;
 		}
 	}
@@ -151,6 +174,11 @@ void CreateTileEntities
         
         transformPosY += tileSize; // Move to next row
         transformPosX = 0; // Reset X for next row
+		
+		int mapNumRows = tilemap.size();
+		int mapNumCols = tilemap[0].size();
+		Game::mapWidth = mapNumCols * tileSize * scale;
+		Game::mapHeight = mapNumRows * tileSize * scale;
     }
 }
 
@@ -162,6 +190,9 @@ void Game::LoadLevel(int level)
 	registry->AddSystem<AnimationSystem>();
 	registry->AddSystem<CollisionSystem>(events);
 	registry->AddSystem<CollisionDebug>(events);
+	registry->AddSystem<DamageSystem>(events);
+	registry->AddSystem<KeyboardControlSystem>(events);
+	registry->AddSystem<CameraMovementSystem>();
 
 	// Adding assets to the asset store
 	assetStore->AddTexture
@@ -180,7 +211,7 @@ void Game::LoadLevel(int level)
 		(
 			renderer, 
 			"chopper-image", 
-			"/home/pranav/del/SDLgamedev/assets/images/chopper.png"
+			"/home/pranav/del/SDLgamedev/assets/images/chopper-spritesheet.png"
 		);
 	assetStore->AddTexture
 		(
@@ -214,6 +245,14 @@ void Game::LoadLevel(int level)
 		("chopper-image", 32, 32, 0, 0, 2); 
 	chopper->AddComponent<AnimationComponent>
 		(2, 20, true);
+	chopper->AddComponent<KeyBoardControlledComponent>
+		(
+			glm::vec2(0, -100),
+			glm::vec2(100, 0),
+			glm::vec2(0, 100),
+			glm::vec2(-100, 0)
+		);
+	chopper->AddComponent<CameraFollowComponent>();
 
 	std::shared_ptr<Entity> radar = registry->CreateEntity();
 	radar->AddComponent<TransformComponent>
@@ -274,9 +313,12 @@ void Game::Update()
 	registry->Update();
 
 	// Ask all the systems to update
+	registry->GetSystem<KeyboardControlSystem>().Update();
 	registry->GetSystem<MovementSystem>().Update(deltaTime);
+	registry->GetSystem<CameraMovementSystem>().Update(camera);
 	registry->GetSystem<AnimationSystem>().Update();
 	registry->GetSystem<CollisionSystem>().Update();
+	registry->GetSystem<DamageSystem>().Update();
 }
 
 void Game::Render()
@@ -285,7 +327,7 @@ void Game::Render()
 	SDL_RenderClear(renderer);
 
 	// Invoke all the systems that need to render
-	registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+	registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
 	registry->GetSystem<CollisionDebug>().Update(renderer, isDebugMode);
 
 	SDL_RenderPresent(renderer);
