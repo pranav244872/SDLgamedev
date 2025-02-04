@@ -42,7 +42,7 @@ class CollisionDebug: public System
 			RequireComponent<TransformComponent>();
 		}
 
-		void Update(SDL_Renderer* renderer, bool debugMode)
+		void Update(SDL_Renderer* renderer, bool debugMode, SDL_Rect& camera)
 		{
 			if (debugMode)
 			{
@@ -60,8 +60,8 @@ class CollisionDebug: public System
                     // Get transformed rectangle for entity A
                     SDL_Rect rectA = 
                     { 
-                        static_cast<int>(aTransform.position.x),
-                        static_cast<int>(aTransform.position.y),
+                        static_cast<int>(aTransform.position.x - camera.x),
+                        static_cast<int>(aTransform.position.y - camera.y),
                         static_cast<int>(aWidth),
                         static_cast<int>(aHeight)
                     };

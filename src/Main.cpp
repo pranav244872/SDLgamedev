@@ -1,14 +1,13 @@
-#include <iostream>
 #include "./Game/Game.h"
+#include <iostream>
 
-int main(int argc, char* argv[]) 
-{	
-	Game game;
+int main(int argc, char *argv[])
+{
+    Game game;
 
-	game.Initialize();
-	game.Run();
-	game.Destroy();
+    game.Initialize();
+    game.Run();
+    game.Destroy();
 
-	return 0;
+    return 0;
 }
-

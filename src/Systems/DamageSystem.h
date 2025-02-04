@@ -20,18 +20,16 @@ class DamageSystem: public System
 		
 		void Update()
 		{
-			auto it = eventMap->find(typeid(CollisionEvent));
-			if (it != eventMap->end())
-			{
-				for (const auto& event : it->second)
-				{
-					// Cast the raw pointer from the unique_ptr to CollisionEvent*
-					CollisionEvent* collisionEvent = static_cast<CollisionEvent*>(event.get());
-					// Check if the entity is involved in the event
-					collisionEvent->a->Kill();
-					collisionEvent->b->Kill();
-				}
-			}
+			/*auto it = eventMap->find(typeid(CollisionEvent));*/
+			/*if (it != eventMap->end())*/
+			/*{*/
+			/*	for (const auto& event : it->second)*/
+			/*	{*/
+			/*		// Cast the raw pointer from the unique_ptr to CollisionEvent**/
+			/*		CollisionEvent* collisionEvent = static_cast<CollisionEvent*>(event.get());*/
+			/*		// Check if the entity is involved in the event*/
+			/*	}*/
+			/*}*/
 		}
 
 };

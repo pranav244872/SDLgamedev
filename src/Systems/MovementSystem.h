@@ -14,7 +14,6 @@ public:
 		RequireComponent<RigidBodyComponent>();
 	}
 	
-
 	void Update(double deltaTime)
 	{
 		// Loop all entities that the system is interested in
@@ -24,8 +23,10 @@ public:
 			auto& transform = entity->GetComponent<TransformComponent>();
 			const auto& rigidbody = entity->GetComponent<RigidBodyComponent>();
 
+			// Update position
 			transform.position.x += rigidbody.velocity.x * deltaTime;
 			transform.position.y += rigidbody.velocity.y * deltaTime;
+
 		}
 	}
 };
