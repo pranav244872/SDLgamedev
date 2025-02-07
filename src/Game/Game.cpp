@@ -291,7 +291,7 @@ void Game::Update()
 
     // Ask all the systems to update
     registry->GetSystem<KeyboardControlSystem>().Update();
-    registry->GetSystem<MovementSystem>().Update(deltaTime);
+    registry->GetSystem<MovementSystem>().Update(deltaTime, events);
     registry->GetSystem<CameraMovementSystem>().Update(
         camera, Game::mapWidth, Game::mapHeight, Game::windowWidth,
         Game::windowHeight
