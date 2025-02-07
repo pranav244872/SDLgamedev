@@ -219,45 +219,42 @@ void Game::LoadLevel(int level)
     }
 
     std::shared_ptr<Entity> chopper = registry->CreateEntity();
-    chopper->AddComponent<TransformComponent>(
+    chopper->AddComponent<TransformComponent>
+	(
         glm::vec2(10.0, 500.0), glm::vec2(2.0, 2.0), 0.0
     );
     chopper->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
-    chopper->AddComponent<SpriteComponent>(
-        "chopper-image", 32, 32, 0, 0, 2, false
-    );
+    chopper->AddComponent<SpriteComponent>
+	("chopper-image", 32, 32, 0, 0, 2, false);
     chopper->AddComponent<AnimationComponent>(2, 20, true);
-    chopper->AddComponent<KeyBoardControlledComponent>(
-        glm::vec2(0, -150), glm::vec2(150, 0), glm::vec2(0, 150),
-        glm::vec2(-150, 0)
-    );
+    chopper->AddComponent<KeyBoardControlledComponent>
+	(
+		glm::vec2(0, -150), glm::vec2(150, 0), glm::vec2(0, 150),
+		glm::vec2(-150, 0)
+	);
     chopper->AddComponent<CameraFollowComponent>();
     chopper->AddComponent<HealthComponent>(100);
+	chopper->AddComponent<ProjectileEmitterComponent>
+	(glm::vec2(200, 0), 1000, 10000, 10, false);
 
     std::shared_ptr<Entity> radar = registry->CreateEntity();
-    radar->AddComponent<TransformComponent>(
-        glm::vec2(windowWidth - 74, 10), glm::vec2(1.0, 1.0), 0.0
-    );
+    radar->AddComponent<TransformComponent>
+	(glm::vec2(windowWidth - 74, 10), glm::vec2(1.0, 1.0), 0.0);
     radar->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     radar->AddComponent<SpriteComponent>("radar-image", 64, 64, 0, 0, 3, true);
     radar->AddComponent<AnimationComponent>(8, 5, true);
 
     std::shared_ptr<Entity> tank = registry->CreateEntity();
-    tank->AddComponent<TransformComponent>(
-        glm::vec2(500.0, 30.0), glm::vec2(2.0, 2.0), 0.0
-    );
+    tank->AddComponent<TransformComponent>
+	(glm::vec2(500.0, 30.0), glm::vec2(2.0, 2.0), 0.0);
     tank->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0));
     tank->AddComponent<SpriteComponent>("tank-image", 32, 32, 0, 0, 1, false);
     tank->AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0, 0));
     tank->AddComponent<HealthComponent>(100);
-    tank->AddComponent<ProjectileEmitterComponent>(
-        glm::vec2(100.0, 0.0), 1000, 10000, 10, false
-    );
 
     std::shared_ptr<Entity> truck = registry->CreateEntity();
-    truck->AddComponent<TransformComponent>(
-        glm::vec2(10.0, 30.0), glm::vec2(2.0, 2.0), 0.0
-    );
+    truck->AddComponent<TransformComponent>	
+	(glm::vec2(10.0, 30.0), glm::vec2(2.0, 2.0), 0.0);
     truck->AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
     truck->AddComponent<SpriteComponent>("truck-image", 32, 32, 0, 0, 1, false);
     truck->AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0, 0));
@@ -296,7 +293,7 @@ void Game::Update()
         camera, Game::mapWidth, Game::mapHeight, Game::windowWidth,
         Game::windowHeight
     );
-    registry->GetSystem<ProjectileEmitSystem>().Update(registry);
+    registry->GetSystem<ProjectileEmitSystem>().Update(registry, events);
     registry->GetSystem<AnimationSystem>().Update();
     registry->GetSystem<CollisionSystem>().Update();
     registry->GetSystem<ProjectileLifecycleSystem>().Update();

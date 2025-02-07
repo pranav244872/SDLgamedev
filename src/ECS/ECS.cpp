@@ -19,6 +19,30 @@ void Entity::Kill()
     Logger::Log("Entity with id " + std::to_string(id) + " has been killed.");
 }
 
+void Entity::Tag(const std::string& tag)
+{
+    std::shared_ptr<Entity> sharedThis = shared_from_this();
+	registry->TagEntity(sharedThis, tag);
+}
+
+bool Entity::HasTag(const std::string& tag) 
+{
+    std::shared_ptr<Entity> sharedThis = shared_from_this();
+	return registry->EntityHasTag(sharedThis, tag);
+}
+
+void Entity::Group(const std::string &group)
+{
+    std::shared_ptr<Entity> sharedThis = shared_from_this();
+	registry->GroupEntity(sharedThis, group);
+}
+
+bool Entity::BelongsToGroup(const std::string &group)
+{
+    std::shared_ptr<Entity> sharedThis = shared_from_this();
+	return registry->EntityBelongsToGroup(sharedThis, group);
+}
+
 void System::AddEntityToSystem(std::shared_ptr<Entity> entity)
 {
 	entities.push_back(entity);
@@ -103,6 +127,74 @@ void Registry::RemoveEntityFromSystems(std::shared_ptr<Entity> entity)
 	{
 		system.second->RemoveEntityFromSystem(entity);
 	}
+}
+
+void Registry::TagEntity(std::shared_ptr<Entity> entity, const std::string &tag)
+{
+	entityPerTag.emplace(tag, entity);
+	tagPerEntity.emplace(entity->getId(), tag);
+}
+
+bool Registry::EntityHasTag
+(std::shared_ptr<Entity> entity, const std::string& tag) const
+{
+	if (tagPerEntity.find(entity->getId()) == tagPerEntity.end())
+	{
+		return false;
+	}
+	return entityPerTag.find(tag)->second == entity;
+}
+
+std::shared_ptr<Entity> Registry::GetEntityByTag(const std::string& tag) const
+{
+	return entityPerTag.at(tag);
+}
+
+void Registry::RemoveEntityTag(std::shared_ptr<Entity> entity)
+{
+	auto taggedEntity = tagPerEntity.find(entity->getId());
+	if (taggedEntity != tagPerEntity.end())
+	{
+		auto tag = taggedEntity->second;
+		entityPerTag.erase(tag);
+		tagPerEntity.erase(taggedEntity);
+	}
+}
+
+void Registry::GroupEntity(std::shared_ptr<Entity> entity, const std::string& group)
+{
+	entitiesPerGroup.emplace(group, std::set<std::shared_ptr<Entity>>());
+	entitiesPerGroup[group].emplace(entity);
+	groupPerEntity.emplace(entity->getId(), group);
+}
+
+bool Registry::EntityBelongsToGroup
+(std::shared_ptr<Entity> entity, const std::string& group) const
+{
+    auto groupEntities = entitiesPerGroup.at(group);
+    
+    // Instead of checking the entity ID, check the shared_ptr directly
+    return groupEntities.find(entity) != groupEntities.end();
+}
+
+std::vector<std::shared_ptr<Entity>> Registry::GetEntitiesByGroup
+(const std::string& group) const
+{
+	auto &setOfEntities = entitiesPerGroup.at(group);
+	return std::vector<std::shared_ptr<Entity>>(setOfEntities.begin(), setOfEntities.end());
+}
+
+void Registry::RemoveEntityGroup(std::shared_ptr<Entity> entity) {
+    auto groupedEntity = groupPerEntity.find(entity->getId());
+    if (groupedEntity != groupPerEntity.end()) {
+        auto group = entitiesPerGroup.find(groupedEntity->second);
+        if (group != entitiesPerGroup.end()) {
+            auto entityInGroup = group->second.find(entity); // Correct: entity is a shared_ptr
+            if (entityInGroup != group->second.end()) {
+                group->second.erase(entityInGroup);
+            }
+        }
+    }
 }
 
 void Registry::Update()

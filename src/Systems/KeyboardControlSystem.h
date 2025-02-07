@@ -35,9 +35,6 @@ class KeyboardControlSystem : public System
                 case SDLK_LEFT:
 					Logger::Log("Left pressed");
                     break;
-                case SDLK_SPACE:
-					Logger::Log("Space pressed");
-					break;
                 }
             }
         }

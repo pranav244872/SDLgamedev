@@ -58,9 +58,18 @@ public:
 	Entity& operator = (const Entity& other) = default;
 	bool operator == (const Entity& other) const { return id == other.id; }
 	bool operator != (const Entity& other) const { return id != other.id; }
+	bool operator > (const Entity& other) const { return id > other.id; }
+	bool operator < (const Entity& other) const { return id < other.id; }
 	
 	class Registry* registry;
+
+	// Manage entity tags and groups
+	void Tag(const std::string& tag);
+	bool HasTag(const std::string& tag);
+	void Group(const std::string& group);
+	bool BelongsToGroup(const std::string& group);
 	
+	// Manage entity components
 	template <typename TComponent, typename ...TArgs>
 	void AddComponent(TArgs&& ...args);
 	template <typename TComponent>
@@ -140,6 +149,14 @@ private:
 	long unsigned int numEntities = 0;
 	std::set<std::shared_ptr<Entity>> entitiesToBeAdded;
 	std::set<std::shared_ptr<Entity>> entitiesToBeKilled;
+	
+	// Entity tags (one tag per entity)
+	std::unordered_map<std::string, std::shared_ptr<Entity>> entityPerTag;
+	std::unordered_map<int, std::string> tagPerEntity;
+
+	// Entity groups (a set of entites per group name)
+	std::unordered_map<std::string, std::set<std::shared_ptr<Entity>>> entitiesPerGroup;
+	std::unordered_map<int, std::string> groupPerEntity;
 
 	// Vector of component pools, each pool contains all the data for a certain
 	// component type
@@ -168,6 +185,18 @@ public:
 	// Entity Management
 	std::shared_ptr<Entity> CreateEntity();	
 	void KillEntity(std::shared_ptr<Entity> entity);
+	
+	// Tag management
+	void TagEntity(std::shared_ptr<Entity> entity, const std::string& tag);
+	bool EntityHasTag(std::shared_ptr<Entity> entity, const std::string& tag) const;
+	std::shared_ptr<Entity> GetEntityByTag(const std::string& tag) const;
+	void RemoveEntityTag(std::shared_ptr<Entity> entity);
+
+	// Group management
+	void GroupEntity(std::shared_ptr<Entity> entity, const std::string& group);
+	bool EntityBelongsToGroup(std::shared_ptr<Entity> entity, const std::string& group) const;
+	std::vector<std::shared_ptr<Entity>> GetEntitiesByGroup(const std::string& group) const;
+	void RemoveEntityGroup(std::shared_ptr<Entity> entity);
 
 	// Component Management
 	// Adds a Component<T> to an entity
