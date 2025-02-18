@@ -147,6 +147,7 @@ void CreateTileEntities(
             int sourceY = (num / 10) * tileSize;
 
             std::shared_ptr<Entity> tile = registry->CreateEntity();
+			tile->Group("tile");
             tile->AddComponent<TransformComponent>(
                 glm::vec2(transformPosX * scale, transformPosY * scale),
                 glm::vec2(scale, scale), 0.0f
@@ -210,7 +211,8 @@ void Game::LoadLevel(int level)
 
     // create entities
 
-    auto tilemap = ParseTilemapFile(
+    auto tilemap = ParseTilemapFile
+	(
         "/home/pranav/del/SDLgamedev/assets/tilemaps/jungle.map"
     );
     if (!tilemap.empty())
@@ -219,6 +221,7 @@ void Game::LoadLevel(int level)
     }
 
     std::shared_ptr<Entity> chopper = registry->CreateEntity();
+	chopper->Tag("player");
     chopper->AddComponent<TransformComponent>
 	(
         glm::vec2(10.0, 500.0), glm::vec2(2.0, 2.0), 0.0
@@ -235,7 +238,7 @@ void Game::LoadLevel(int level)
     chopper->AddComponent<CameraFollowComponent>();
     chopper->AddComponent<HealthComponent>(100);
 	chopper->AddComponent<ProjectileEmitterComponent>
-	(glm::vec2(200, 0), 1000, 10000, 10, false);
+	(glm::vec2(200, 0), 1000, 10000, 10, true);
 
     std::shared_ptr<Entity> radar = registry->CreateEntity();
     radar->AddComponent<TransformComponent>
@@ -245,20 +248,26 @@ void Game::LoadLevel(int level)
     radar->AddComponent<AnimationComponent>(8, 5, true);
 
     std::shared_ptr<Entity> tank = registry->CreateEntity();
+	tank->Group("enemies");
     tank->AddComponent<TransformComponent>
 	(glm::vec2(500.0, 30.0), glm::vec2(2.0, 2.0), 0.0);
     tank->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0));
     tank->AddComponent<SpriteComponent>("tank-image", 32, 32, 0, 0, 1, false);
     tank->AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0, 0));
     tank->AddComponent<HealthComponent>(100);
+	tank->AddComponent<ProjectileEmitterComponent>
+	(glm::vec2(200, 0), 1000, 10000, 10, false);
 
     std::shared_ptr<Entity> truck = registry->CreateEntity();
+	truck->Group("enemies");
     truck->AddComponent<TransformComponent>	
 	(glm::vec2(10.0, 30.0), glm::vec2(2.0, 2.0), 0.0);
     truck->AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
     truck->AddComponent<SpriteComponent>("truck-image", 32, 32, 0, 0, 1, false);
     truck->AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0, 0));
     truck->AddComponent<HealthComponent>(100);
+	truck->AddComponent<ProjectileEmitterComponent>
+	(glm::vec2(200, 0), 1000, 10000, 10, false);
 }
 
 void Game::Setup() { LoadLevel(1); }

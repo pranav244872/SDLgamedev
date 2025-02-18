@@ -171,7 +171,8 @@ void Registry::GroupEntity(std::shared_ptr<Entity> entity, const std::string& gr
 bool Registry::EntityBelongsToGroup
 (std::shared_ptr<Entity> entity, const std::string& group) const
 {
-    auto groupEntities = entitiesPerGroup.at(group);
+	if(entitiesPerGroup.find(group) == entitiesPerGroup.end()) return false;
+	auto groupEntities = entitiesPerGroup.at(group);
     
     // Instead of checking the entity ID, check the shared_ptr directly
     return groupEntities.find(entity) != groupEntities.end();
@@ -211,8 +212,19 @@ void Registry::Update()
 	{
 		RemoveEntityFromSystems(entity);
 		entityComponentSignatures[entity->getId()].reset();
+		
+		// Remove the entity from the component pools
+		/*for (auto& pool: componentPools)*/
+		/*{*/
+		/*	pool->RemoveEntityFromPool(entity->getId());*/
+		/*}*/
+
 		// Make the entity id available to be reused
 		freeIds.push_back(entity->getId());
+
+		// Remove any traces of that entity from the tag/group maps
+		RemoveEntityTag(entity);
+		RemoveEntityGroup(entity);
 	}
 	entitiesToBeKilled.clear();
 }

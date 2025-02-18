@@ -62,6 +62,7 @@ class ProjectileEmitSystem : public System
 
 				// Create projectile
 				std::shared_ptr<Entity> projectile = registry->CreateEntity();
+				projectile->Group("projectiles");
 				projectile->AddComponent<TransformComponent>
 				(projectilePosition, glm::vec2(2.0, 2.0), angle);  // Set angle based on velocity direction
 				projectile->AddComponent<RigidBodyComponent>(projectileVelocity);  // Add emitter's velocity to projectile
@@ -120,6 +121,7 @@ class ProjectileEmitSystem : public System
 						}
 						// Add a new projectile entity to the registry
 						std::shared_ptr<Entity> projectile = registry->CreateEntity();
+						projectile->Group("projectiles");
 						projectile->AddComponent<TransformComponent>
 						(projectilePosition, glm::vec2(2.0, 2.0), 0);
 						projectile->AddComponent<RigidBodyComponent>
