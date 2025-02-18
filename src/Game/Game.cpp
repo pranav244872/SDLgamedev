@@ -26,6 +26,12 @@ void Game::Initialize()
         return;
     }
 
+	if (TTF_Init() != 0)
+	{
+		Logger::Err("Error Initializing SDL TTF");
+		return;
+	}
+
     // Here we are getting our computers display width and display height
     // through SDL function
     SDL_DisplayMode displayMode;
@@ -182,32 +188,44 @@ void Game::LoadLevel(int level)
     registry->AddSystem<CameraMovementSystem>();
     registry->AddSystem<ProjectileEmitSystem>();
     registry->AddSystem<ProjectileLifecycleSystem>();
+	registry->AddSystem<RenderTextSystem>();
 
     // Adding assets to the asset store
-    assetStore->AddTexture(
+    assetStore->AddTexture
+	(
         renderer, "tank-image",
         "/home/pranav/del/SDLgamedev/assets/images/tank-tiger-left.png"
     );
-    assetStore->AddTexture(
+    assetStore->AddTexture
+	(
         renderer, "jungle-tilemap",
         "/home/pranav/del/SDLgamedev/assets/tilemaps/jungle.png"
     );
-    assetStore->AddTexture(
+    assetStore->AddTexture
+	(
         renderer, "chopper-image",
         "/home/pranav/del/SDLgamedev/assets/images/chopper-spritesheet.png"
     );
-    assetStore->AddTexture(
+    assetStore->AddTexture
+	(
         renderer, "radar-image",
         "/home/pranav/del/SDLgamedev/assets/images/radar.png"
     );
-    assetStore->AddTexture(
+    assetStore->AddTexture
+	(
         renderer, "truck-image",
         "/home/pranav/del/SDLgamedev/assets/images/truck-ford-right.png"
     );
-    assetStore->AddTexture(
+    assetStore->AddTexture
+	(
         renderer, "bullet-image",
         "/home/pranav/del/SDLgamedev/assets/images/bullet.png"
     );
+	assetStore->AddFont
+	(
+		"chariot-font" , "/home/pranav/del/SDLgamedev/assets/fonts/charriot.ttf",
+		14
+	);
 
     // create entities
 
@@ -226,6 +244,8 @@ void Game::LoadLevel(int level)
 	(
         glm::vec2(10.0, 500.0), glm::vec2(2.0, 2.0), 0.0
     );
+	chopper->AddComponent<BoxColliderComponent>
+	(32, 32, glm::vec2(0, 0));
     chopper->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     chopper->AddComponent<SpriteComponent>
 	("chopper-image", 32, 32, 0, 0, 2, false);
@@ -268,6 +288,14 @@ void Game::LoadLevel(int level)
     truck->AddComponent<HealthComponent>(100);
 	truck->AddComponent<ProjectileEmitterComponent>
 	(glm::vec2(200, 0), 1000, 10000, 10, false);
+
+	std::shared_ptr<Entity> label = registry->CreateEntity();
+	SDL_Color green = {0 , 255, 0};
+	label->AddComponent<TextLabelComponent>
+	(  
+		glm::vec2(windowWidth / 2 - 40, 10), 
+		"This is a text label", "chariot-font", green, true
+	);
 }
 
 void Game::Setup() { LoadLevel(1); }
@@ -316,6 +344,7 @@ void Game::Render()
 
     // Invoke all the systems that need to render
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
+	registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore, camera);
     registry->GetSystem<CollisionDebug>().Update(renderer, isDebugMode, camera);
 
     SDL_RenderPresent(renderer);

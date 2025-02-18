@@ -11,6 +11,7 @@
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/TransformComponent.h"
+#include "../Components/TextLabelComponent.h"
 #include "../ECS/ECS.h"
 #include "../Events/Event.h"
 #include "../Logger/Logger.h"
@@ -24,6 +25,7 @@
 #include "../Systems/ProjectileEmitSystem.h"
 #include "../Systems/ProjectileLifecycleSystem.h"
 #include "../Systems/RenderSystem.h"
+#include "../Systems/RenderTextSystem.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <fstream>
