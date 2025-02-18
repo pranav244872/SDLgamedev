@@ -189,6 +189,7 @@ void Game::LoadLevel(int level)
     registry->AddSystem<ProjectileEmitSystem>();
     registry->AddSystem<ProjectileLifecycleSystem>();
 	registry->AddSystem<RenderTextSystem>();
+	registry->AddSystem<RenderHealthStatus>();
 
     // Adding assets to the asset store
     assetStore->AddTexture
@@ -225,6 +226,11 @@ void Game::LoadLevel(int level)
 	(
 		"chariot-font" , "/home/pranav/del/SDLgamedev/assets/fonts/charriot.ttf",
 		14
+	);
+	assetStore->AddFont
+	(
+		"title-font" , "/home/pranav/del/SDLgamedev/assets/fonts/charriot.ttf",
+		30
 	);
 
     // create entities
@@ -293,8 +299,8 @@ void Game::LoadLevel(int level)
 	SDL_Color green = {0 , 255, 0};
 	label->AddComponent<TextLabelComponent>
 	(  
-		glm::vec2(windowWidth / 2 - 40, 10), 
-		"This is a text label", "chariot-font", green, true
+		glm::vec2(windowWidth / 2 - 100, 10), 
+		"WARHAMMER", "title-font", green, true
 	);
 }
 
@@ -345,6 +351,7 @@ void Game::Render()
     // Invoke all the systems that need to render
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
 	registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore, camera);
+	registry->GetSystem<RenderHealthStatus>().Update(renderer, assetStore, camera);
     registry->GetSystem<CollisionDebug>().Update(renderer, isDebugMode, camera);
 
     SDL_RenderPresent(renderer);

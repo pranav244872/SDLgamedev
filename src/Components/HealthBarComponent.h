@@ -1,4 +1,0 @@
-#ifndef HEALTHBARCOMPONENT_H
-#define HEALTHBARCOMPONENT_H
-
-#endif

@@ -26,6 +26,7 @@
 #include "../Systems/ProjectileLifecycleSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "../Systems/RenderTextSystem.h"
+#include "../Systems/RenderHealthStatus.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <fstream>
