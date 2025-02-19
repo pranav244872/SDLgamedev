@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <vector>
 #include "../Logger/Logger.h"
 
 class AssetStore
@@ -30,5 +31,9 @@ public:
 
 	SDL_Texture* GetTexture(const std::string& assetId);
 	TTF_Font* GetFont(const std::string& assetId);
+
+	// Function to get the list of texture names
+	std::vector<std::string> GetTextureNames() const;
+	std::vector<std::string> GetFontNames() const;
 };
 #endif

@@ -59,3 +59,23 @@ SDL_Texture* AssetStore::GetTexture(const std::string& assetId)
 	return textures[assetId];
 }
 
+std::vector<std::string> AssetStore::GetFontNames() const
+{
+	std::vector<std::string> names;
+	for (const auto& pair : fonts)
+	{
+		names.push_back(pair.first);
+	}
+	return names;
+}
+
+std::vector<std::string> AssetStore::GetTextureNames() const
+{
+	std::vector<std::string> names;
+	for (const auto& pair : textures)
+	{
+		names.push_back(pair.first);
+	}
+	return names;
+}
+

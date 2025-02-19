@@ -51,6 +51,9 @@ void Game::Initialize()
     renderer = SDL_CreateRenderer(window, -1, 0);
     if (!renderer) { Logger::Err("Error creating SDL renderer"); }
 
+	// Initialize the imgui context
+	ImGui::CreateContext();
+	ImGuiSDL::Initialize(renderer, windowWidth, windowHeight);
     // Initialize the camera view with the entire screen area
     camera.x = 0;
     camera.y = 0;
@@ -82,24 +85,35 @@ void Game::ProcessInput()
         events->erase(it);
     }
 
-    // Handle Key presses
     SDL_Event sdlEvent;
     while (SDL_PollEvent(&sdlEvent))
     {
+		// ImGui SDL input
+		ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
+		ImGuiIO& io = ImGui::GetIO();
+
+		int mouseX, mouseY;
+		const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+
+		io.MousePos = ImVec2(mouseX, mouseY);
+		io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+		io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+
+		// Handle core SDL events (close window, key pressed, etc.)
         switch (sdlEvent.type)
         {
-        case SDL_QUIT: isRunning = false; break;
-        case SDL_KEYDOWN:
-            if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) { isRunning = false; }
-            else if (sdlEvent.key.keysym.sym == SDLK_d)
-            {
-                isDebugMode = !isDebugMode;
-            }
-            // Emit a key press event
-            std::unique_ptr<KeyPressEvent> event =
-                std::make_unique<KeyPressEvent>(sdlEvent.key.keysym.sym);
-            (*events)[typeid(KeyPressEvent)].push_back(std::move(event));
-            break;
+			case SDL_QUIT: isRunning = false; break;
+			case SDL_KEYDOWN:
+				if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) { isRunning = false; }
+				else if (sdlEvent.key.keysym.sym == SDLK_d)
+				{
+					isDebugMode = !isDebugMode;
+				}
+				// Emit a key press event
+				std::unique_ptr<KeyPressEvent> event =
+					std::make_unique<KeyPressEvent>(sdlEvent.key.keysym.sym);
+				(*events)[typeid(KeyPressEvent)].push_back(std::move(event));
+				break;
         }
     }
 }
@@ -190,6 +204,7 @@ void Game::LoadLevel(int level)
     registry->AddSystem<ProjectileLifecycleSystem>();
 	registry->AddSystem<RenderTextSystem>();
 	registry->AddSystem<RenderHealthStatus>();
+	registry->AddSystem<RenderGUISystem>();
 
     // Adding assets to the asset store
     assetStore->AddTexture
@@ -353,12 +368,18 @@ void Game::Render()
 	registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore, camera);
 	registry->GetSystem<RenderHealthStatus>().Update(renderer, assetStore, camera);
     registry->GetSystem<CollisionDebug>().Update(renderer, isDebugMode, camera);
+	if (isDebugMode)
+	{
+		registry->GetSystem<RenderGUISystem>().Update(registry, assetStore);
+	}
 
     SDL_RenderPresent(renderer);
 }
 
 void Game::Destroy()
 {
+	ImGuiSDL::Deinitialize();
+	ImGui::DestroyContext();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

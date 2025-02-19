@@ -27,9 +27,13 @@
 #include "../Systems/RenderSystem.h"
 #include "../Systems/RenderTextSystem.h"
 #include "../Systems/RenderHealthStatus.h"
+#include "../Systems/RenderGUISystem.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <fstream>
+#include <imgui/imgui.h>
+#include <imgui/imgui_sdl.h>
+#include <imgui/imgui_impl_sdl.h>
 #include <glm/glm.hpp>
 #include <iostream>
 #include <sstream>
