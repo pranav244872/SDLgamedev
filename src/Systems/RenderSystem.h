@@ -40,6 +40,33 @@ public:
 				entity->GetComponent<SpriteComponent>();
 			renderableEntity.transformComponent = 
 				entity->GetComponent<TransformComponent>();
+
+			// Bypass rendering entities if they are outside the camera view
+			bool isEntityOutsideCameraView = 
+			(
+				renderableEntity.transformComponent.position.x + 
+				( 
+					renderableEntity.transformComponent.scale.x * 
+					renderableEntity.spriteComponent.width
+				) < camera.x ||
+				renderableEntity.transformComponent.position.x 
+				> camera.x + camera.w ||
+				renderableEntity.transformComponent.position.y +
+				( 
+					renderableEntity.transformComponent.scale.y * 
+					renderableEntity.spriteComponent.height
+				) < camera.y ||
+				renderableEntity.transformComponent.position.y 
+				> camera.y + camera.h
+			);
+			
+			// cull sprites that are outside the camera view (and are not fixed)
+			if 
+			(
+				isEntityOutsideCameraView && 
+				!renderableEntity.spriteComponent.isFixed
+			) continue;
+
 			renderableEntities.emplace_back(renderableEntity);  
 		}
 
@@ -76,7 +103,7 @@ public:
 				&dstRect,
 				transform.rotation,
 				nullptr,
-				SDL_FLIP_NONE
+				sprite.flip
 			);
 		}
 	}

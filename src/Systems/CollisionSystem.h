@@ -14,10 +14,14 @@ class CollisionSystem: public System
 	private:
 		std::shared_ptr<EventMap> eventMap;
 
-		void emitCollisionEvent(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b)
+		void emitCollisionEvent
+		(
+			std::shared_ptr<Entity> a, std::shared_ptr<Entity> b,
+			double overlapX, double overlapY
+		)
 		{
 			std::unique_ptr<CollisionEvent> event = 
-			std::make_unique<CollisionEvent>(a, b);
+			std::make_unique<CollisionEvent>(a, b, overlapX, overlapY);
 			(*eventMap)[typeid(CollisionEvent)].push_back(std::move(event));
 		}
 
@@ -29,6 +33,23 @@ class CollisionSystem: public System
 				it->second.clear();
 				eventMap->erase(it);
 			}
+		}
+
+		// Function to calculate overlap in X and Y directions
+		std::pair<double, double> CalculateOverlap(
+			double aX, double aY, double aW, double aH,
+			double bX, double bY, double bW, double bH
+		)
+		{
+			// Calculate the X and Y overlaps between the two AABBs
+			double overlapX = std::min(aX + aW, bX + bW) - std::max(aX, bX);
+			double overlapY = std::min(aY + aH, bY + bH) - std::max(aY, bY);
+
+			// If there is no overlap in either direction, return zero
+			if (overlapX < 0) overlapX = 0;
+			if (overlapY < 0) overlapY = 0;
+
+			return {overlapX, overlapY};
 		}
 
 	public:
@@ -53,7 +74,7 @@ class CollisionSystem: public System
 				aX < bX + bW &&   // Check if A's left is less than B's right
 				aX + aW > bX &&   // Check if A's right is greater than B's left
 				aY < bY + bH &&   // Check if A's top is less than B's bottom
-				aY + aH > bY	 // Check if A's bottom is greater than B's top
+				aY + aH > bY      // Check if A's bottom is greater than B's top
 			);       
 		}
 
@@ -102,7 +123,29 @@ class CollisionSystem: public System
 					// If a collision occurred, log it
 					if (collisionHappened)
 					{
-						emitCollisionEvent(a, b);
+						// Calculate overlap in X and Y directions
+						auto [overlapX, overlapY] = 
+						CalculateOverlap
+						(
+							aTransform.position.x, aTransform.position.y, 
+							aWidth, aHeight,
+							bTransform.position.x, bTransform.position.y, 
+							bWidth, bHeight
+						);
+
+						emitCollisionEvent(a, b, overlapX, overlapY);
+
+						// Here, you can log the overlap or store it as needed
+						// For now, we just print the overlap values to the console
+						Logger::Log
+						(
+							"Collision between entities " 
+							+ std::to_string(a->getId()) + " and " 
+							+ std::to_string(b->getId()) 
+							+ " with overlap (X, Y): (" 
+							+ std::to_string(overlapX) + ", " 
+							+ std::to_string(overlapY) + ")"
+						);
 					}
 				}
 			}

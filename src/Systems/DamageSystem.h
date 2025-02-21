@@ -75,15 +75,6 @@ class DamageSystem: public System
 					// Cast the raw pointer from the unique_ptr to CollisionEvent*
 					CollisionEvent* collisionEvent = static_cast<CollisionEvent*>(event.get());
 					// Check if the entity is involved in the event
-					Logger::Log
-					(
-						"Collision event emitted between: " +
-						std::to_string(collisionEvent->a->getId()) +
-						" and " +
-						std::to_string(collisionEvent->b->getId())
-
-					);
-
 					if
 					(
 						collisionEvent->a->BelongsToGroup("projectiles")

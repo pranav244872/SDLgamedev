@@ -229,8 +229,18 @@ void Game::LoadLevel(int level)
     );
     assetStore->AddTexture
 	(
-        renderer, "truck-image",
+        renderer, "tree-image",
+        "/home/pranav/del/SDLgamedev/assets/images/tree.png"
+    );
+    assetStore->AddTexture
+	(
+        renderer, "truck-right",
         "/home/pranav/del/SDLgamedev/assets/images/truck-ford-right.png"
+    );
+    assetStore->AddTexture
+	(
+        renderer, "truck-left",
+        "/home/pranav/del/SDLgamedev/assets/images/truck-ford-left.png"
     );
     assetStore->AddTexture
 	(
@@ -259,25 +269,25 @@ void Game::LoadLevel(int level)
         CreateTileEntities(registry, tilemap, 3);
     }
 
-    std::shared_ptr<Entity> chopper = registry->CreateEntity();
+	std::shared_ptr<Entity> chopper = registry->CreateEntity();
 	chopper->Tag("player");
-    chopper->AddComponent<TransformComponent>
+	chopper->AddComponent<TransformComponent>
 	(
-        glm::vec2(10.0, 500.0), glm::vec2(2.0, 2.0), 0.0
-    );
+	 glm::vec2(10.0, 500.0), glm::vec2(2.0, 2.0), 0.0
+	);
 	chopper->AddComponent<BoxColliderComponent>
 	(32, 32, glm::vec2(0, 0));
-    chopper->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
-    chopper->AddComponent<SpriteComponent>
+	chopper->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+	chopper->AddComponent<SpriteComponent>
 	("chopper-image", 32, 32, 0, 0, 2, false);
-    chopper->AddComponent<AnimationComponent>(2, 20, true);
-    chopper->AddComponent<KeyBoardControlledComponent>
+	chopper->AddComponent<AnimationComponent>(2, 20, true);
+	chopper->AddComponent<KeyBoardControlledComponent>
 	(
-		glm::vec2(0, -150), glm::vec2(150, 0), glm::vec2(0, 150),
-		glm::vec2(-150, 0)
+	 glm::vec2(0, -150), glm::vec2(150, 0), glm::vec2(0, 150),
+	 glm::vec2(-150, 0)
 	);
-    chopper->AddComponent<CameraFollowComponent>();
-    chopper->AddComponent<HealthComponent>(100);
+	chopper->AddComponent<CameraFollowComponent>();
+	chopper->AddComponent<HealthComponent>(100);
 	chopper->AddComponent<ProjectileEmitterComponent>
 	(glm::vec2(200, 0), 1000, 10000, 10, true);
 
@@ -288,23 +298,39 @@ void Game::LoadLevel(int level)
     radar->AddComponent<SpriteComponent>("radar-image", 64, 64, 0, 0, 3, true);
     radar->AddComponent<AnimationComponent>(8, 5, true);
 
-    std::shared_ptr<Entity> tank = registry->CreateEntity();
-	tank->Group("enemies");
-    tank->AddComponent<TransformComponent>
-	(glm::vec2(500.0, 30.0), glm::vec2(2.0, 2.0), 0.0);
-    tank->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0));
-    tank->AddComponent<SpriteComponent>("tank-image", 32, 32, 0, 0, 1, false);
-    tank->AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0, 0));
-    tank->AddComponent<HealthComponent>(100);
-	tank->AddComponent<ProjectileEmitterComponent>
-	(glm::vec2(200, 0), 1000, 10000, 10, false);
+	/*   std::shared_ptr<Entity> tank = registry->CreateEntity();*/
+	/*tank->Group("enemies");*/
+	/*   tank->AddComponent<TransformComponent>*/
+	/*(glm::vec2(500.0, 30.0), glm::vec2(2.0, 2.0), 0.0);*/
+	/*   tank->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0));*/
+	/*   tank->AddComponent<SpriteComponent>("tank-image", 32, 32, 0, 0, 1, false);*/
+	/*   tank->AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0, 0));*/
+	/*   tank->AddComponent<HealthComponent>(100);*/
+	/*tank->AddComponent<ProjectileEmitterComponent>*/
+	/*(glm::vec2(200, 0), 1000, 10000, 10, false);*/
+
+	std::shared_ptr<Entity> treeA = registry->CreateEntity();
+	treeA->Group("obstacles");
+    treeA->AddComponent<TransformComponent>
+	(glm::vec2(640.0, 740.0), glm::vec2(2.0, 2.0), 0.0);
+    treeA->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0));
+    treeA->AddComponent<SpriteComponent>("tree-image", 16, 32, 0, 0, 1, false);
+    treeA->AddComponent<BoxColliderComponent>(16, 32, glm::vec2(0, 0));
+
+	std::shared_ptr<Entity> treeB = registry->CreateEntity();
+	treeB->Group("obstacles");
+    treeB->AddComponent<TransformComponent>
+	(glm::vec2(1025.0, 745.0), glm::vec2(2.0, 2.0), 0.0);
+    treeB->AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0));
+    treeB->AddComponent<SpriteComponent>("tree-image", 16, 32, 0, 0, 1, false);
+    treeB->AddComponent<BoxColliderComponent>(16, 32, glm::vec2(0, 0));
 
     std::shared_ptr<Entity> truck = registry->CreateEntity();
 	truck->Group("enemies");
     truck->AddComponent<TransformComponent>	
-	(glm::vec2(10.0, 30.0), glm::vec2(2.0, 2.0), 0.0);
-    truck->AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
-    truck->AddComponent<SpriteComponent>("truck-image", 32, 32, 0, 0, 1, false);
+	(glm::vec2(700.0, 745.0), glm::vec2(2.0, 2.0), 0.0);
+    truck->AddComponent<RigidBodyComponent>(glm::vec2(50, 0));
+    truck->AddComponent<SpriteComponent>("truck-right", 32, 32, 0, 0, 1, false);
     truck->AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0, 0));
     truck->AddComponent<HealthComponent>(100);
 	truck->AddComponent<ProjectileEmitterComponent>
@@ -346,8 +372,10 @@ void Game::Update()
 
     // Ask all the systems to update
     registry->GetSystem<KeyboardControlSystem>().Update();
-    registry->GetSystem<MovementSystem>().Update(deltaTime, events);
-    registry->GetSystem<CameraMovementSystem>().Update(
+    registry->GetSystem<MovementSystem>().Update
+	(deltaTime, events, Game::mapWidth, Game::mapHeight);
+    registry->GetSystem<CameraMovementSystem>().Update
+	(
         camera, Game::mapWidth, Game::mapHeight, Game::windowWidth,
         Game::windowHeight
     );

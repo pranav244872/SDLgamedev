@@ -12,7 +12,7 @@ typedef std::unordered_map
 
 class CollisionDebug: public System
 {
-	private: 
+ 	private: 
 		std::shared_ptr<EventMap> eventMap;
 		bool isEntityInCollisionEvents(std::shared_ptr<Entity> entity)
 		{
