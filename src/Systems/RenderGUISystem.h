@@ -20,7 +20,8 @@ public:
     void Update
 	(
         const std::unique_ptr<Registry>& registry,
-        const std::unique_ptr<AssetStore>& assetStore
+        const std::unique_ptr<AssetStore>& assetStore,
+		SDL_Rect& camera
     ) 
 	{
         // Start new ImGui frame
@@ -32,7 +33,12 @@ public:
             // ----- TransformComponent -----
             static int enemyXPos, enemyYPos;
 			static int enemyXScale, enemyYScale, enemyAngleDegrees;
-            if (ImGui::CollapsingHeader("TransformComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if 
+			(
+				ImGui::CollapsingHeader
+				("TransformComponent", ImGuiTreeNodeFlags_DefaultOpen)
+			) 
+			{
                 ImGui::InputInt("X Position", &enemyXPos);
                 ImGui::InputInt("Y Position", &enemyYPos);
                 ImGui::InputInt("X Scale", &enemyXScale);
@@ -42,7 +48,12 @@ public:
 
             // ----- RigidBodyComponent -----
             static int enemyVelX, enemyVelY;
-            if (ImGui::CollapsingHeader("RigidBodyComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if 
+			(
+				ImGui::CollapsingHeader
+				("RigidBodyComponent", ImGuiTreeNodeFlags_DefaultOpen)
+			) 
+			{
                 ImGui::InputInt("X Velocity", &enemyVelX);
                 ImGui::InputInt("Y Velocity", &enemyVelY);
             }
@@ -86,7 +97,12 @@ public:
             // ----- BoxColliderComponent -----
             static int enemyColliderWidth, enemyColliderHeight;
             static int enemyColliderOffsetX, enemyColliderOffsetY;
-            if (ImGui::CollapsingHeader("BoxColliderComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if 
+			(
+				ImGui::CollapsingHeader
+				("BoxColliderComponent", ImGuiTreeNodeFlags_DefaultOpen)
+			) 
+			{
                 ImGui::InputInt("Collider Width", &enemyColliderWidth);
                 ImGui::InputInt("Collider Height", &enemyColliderHeight);
                 ImGui::InputInt("Collider Offset X", &enemyColliderOffsetX);
@@ -95,7 +111,12 @@ public:
 
             // ----- HealthComponent -----
             static int enemyHealth;
-            if (ImGui::CollapsingHeader("HealthComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if 
+			(
+				ImGui::CollapsingHeader
+				("HealthComponent", ImGuiTreeNodeFlags_DefaultOpen)
+			) 
+			{
                 ImGui::InputInt("Health", &enemyHealth);
             }
 
@@ -106,8 +127,18 @@ public:
             static int currentDirection = 0;
             glm::vec2 bulletVelocity;
 
-            if (ImGui::CollapsingHeader("ProjectileEmitterComponent", ImGuiTreeNodeFlags_DefaultOpen)) {
-                ImGui::Combo("Bullet Direction", &currentDirection, directions, IM_ARRAYSIZE(directions));
+            if 
+			(
+				ImGui::CollapsingHeader
+				("ProjectileEmitterComponent", ImGuiTreeNodeFlags_DefaultOpen)
+			) 
+			{
+                ImGui::Combo
+				(
+					"Bullet Direction", 
+					&currentDirection, directions, 
+					IM_ARRAYSIZE(directions)
+				);
                 ImGui::InputInt("Bullet Speed", &bulletSpeed);
                 ImGui::InputInt("Interval Between Bullets (sec)", &bulletIntervalSec);
                 ImGui::InputInt("Bullet Lifetime (sec)", &bulletLifetimeSec);
@@ -155,8 +186,25 @@ public:
                 );
             }
         }
-
         ImGui::End();
+
+		// Display a small overlay window to display the map position using the mouse
+		ImGuiWindowFlags windowFlags = 
+			ImGuiWindowFlags_NoDecoration | 
+			ImGuiWindowFlags_AlwaysAutoResize | 
+			ImGuiWindowFlags_NoNav;
+		ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always, ImVec2(0, 0));
+		ImGui::SetNextWindowBgAlpha(0.9f);
+		if (ImGui::Begin("Map coordinates", NULL, windowFlags))
+		{
+			ImGui::Text
+			(
+				"Map coordinates (x = %.1f, y = %.1f)",
+				ImGui::GetIO().MousePos.x + camera.x,
+				ImGui::GetIO().MousePos.y + camera.y
+			);
+		}
+		ImGui::End();
 
         // Render ImGui frame
         ImGui::Render();

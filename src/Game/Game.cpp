@@ -370,7 +370,7 @@ void Game::Render()
     registry->GetSystem<CollisionDebug>().Update(renderer, isDebugMode, camera);
 	if (isDebugMode)
 	{
-		registry->GetSystem<RenderGUISystem>().Update(registry, assetStore);
+		registry->GetSystem<RenderGUISystem>().Update(registry, assetStore, camera);
 	}
 
     SDL_RenderPresent(renderer);
