@@ -59,14 +59,14 @@ class ProjectileEmitSystem : public System
 					angle = glm::atan(rigidbody.velocity.y, rigidbody.velocity.x);  // Angle in radians
 					angle = glm::degrees(angle);  // Convert to degrees
 				}
-
+				
 				// Create projectile
 				std::shared_ptr<Entity> projectile = registry->CreateEntity();
 				projectile->Group("projectiles");
 				projectile->AddComponent<TransformComponent>
 				(projectilePosition, glm::vec2(2.0, 2.0), angle);  // Set angle based on velocity direction
 				projectile->AddComponent<RigidBodyComponent>(projectileVelocity);  // Add emitter's velocity to projectile
-				projectile->AddComponent<SpriteComponent>("bullet-image", 4, 4, 2, false);
+				projectile->AddComponent<SpriteComponent>("bullet-texture", 4, 4, 2, false);
 				projectile->AddComponent<BoxColliderComponent>(4, 4);
 				projectile->AddComponent<ProjectileComponent>
 				(
@@ -119,6 +119,8 @@ class ProjectileEmitSystem : public System
 							projectilePosition.x += (transform.scale.x * sprite.width / 2);
 							projectilePosition.y += (transform.scale.y * sprite.height / 2);
 						}
+
+						Logger::Log("Creating projectile for tank");
 						// Add a new projectile entity to the registry
 						std::shared_ptr<Entity> projectile = registry->CreateEntity();
 						projectile->Group("projectiles");
@@ -126,7 +128,7 @@ class ProjectileEmitSystem : public System
 						(projectilePosition, glm::vec2(2.0, 2.0), 0);
 						projectile->AddComponent<RigidBodyComponent>
 						(projectileEmitter.projectileVelocity);
-						projectile->AddComponent<SpriteComponent>("bullet-image", 4, 4, 2, false);
+						projectile->AddComponent<SpriteComponent>("bullet-texture", 4, 4, 1, false);
 						projectile->AddComponent<BoxColliderComponent>(4, 4);
 						projectile->AddComponent<ProjectileComponent>
 						(

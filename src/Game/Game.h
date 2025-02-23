@@ -30,13 +30,12 @@
 #include "../Systems/RenderGUISystem.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <fstream>
 #include <imgui/imgui.h>
 #include <imgui/imgui_sdl.h>
 #include <imgui/imgui_impl_sdl.h>
 #include <glm/glm.hpp>
 #include <iostream>
-#include <sstream>
+#include <sol/sol.hpp>
 
 typedef std::unordered_map<std::type_index, std::vector<std::unique_ptr<Event>>>
     EventMap;
@@ -54,6 +53,8 @@ class Game
         SDL_Renderer *renderer;
         SDL_Rect camera;
 
+		sol::state lua;
+
         std::unique_ptr<Registry> registry;
         std::unique_ptr<AssetStore> assetStore;
         std::shared_ptr<EventMap> events;
@@ -68,7 +69,6 @@ class Game
         void Initialize();
         void Run();
         void ProcessInput();
-        void LoadLevel(int level);
         void Setup();
         void Update();
         void Render();
