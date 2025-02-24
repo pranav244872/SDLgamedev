@@ -66,9 +66,9 @@ void LevelLoader::CreateTileEntities
 
             tile->AddComponent<SpriteComponent>
 			(
-                textureAssetId, tileSize, tileSize, sourceX, sourceY, 0, false
+                textureAssetId, tileSize, tileSize, sourceX, sourceY, -1, false
             );
-
+			
             transformPosX += tileSize; // Move to next tile in row
         }
 
@@ -142,7 +142,7 @@ void LevelLoader::LoadLevel
     {
         Logger::Log("Assets table found with " + std::to_string(assets.size() + 1) + " entries");
 
-        for (int i = 0; i < assets.size() + 1; i++)
+        for (size_t i = 0; i < assets.size() + 1; i++)
         {
             sol::optional<sol::table> asset = assets[i];
             if (asset == sol::nullopt)
@@ -217,7 +217,7 @@ void LevelLoader::LoadLevel
     {
         Logger::Log("Entities table found with " + std::to_string(entities.size() + 1) + " entries");
 
-        for (int i = 0; i < entities.size() + 1; i++)
+        for (size_t i = 0; i < entities.size() + 1; i++)
         {
             sol::optional<sol::table> entity = entities[i];
             if (entity == sol::nullopt)
@@ -370,6 +370,14 @@ void LevelLoader::LoadLevel
                     );
                     Logger::Log("Added KeyBoardControlledComponent: upVel = (" + std::to_string(upVelX) + ", " + std::to_string(upVelY) + "), rightVel = (" + std::to_string(rightVelX) + ", " + std::to_string(rightVelY) + "), downVel = (" + std::to_string(downVelX) + ", " + std::to_string(downVelY) + "), leftVel = (" + std::to_string(leftVelX) + ", " + std::to_string(leftVelY) + ")");
                 }
+
+				// Script
+				sol::optional<sol::table> script = components.value()["on_update_script"];
+				if (script != sol::nullopt)
+				{
+					sol::function func = components.value()["on_update_script"][0];
+					newEntity->AddComponent<ScriptComponent>(func);
+				}
             }
         }
     }

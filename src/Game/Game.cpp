@@ -135,10 +135,14 @@ void Game::Setup()
 	registry->AddSystem<RenderTextSystem>();
 	registry->AddSystem<RenderHealthStatus>();
 	registry->AddSystem<RenderGUISystem>();
+	registry->AddSystem<ScriptSystem>();
+
+	// Create the bindings between C++ and Lua functions
+	registry->GetSystem<ScriptSystem>().CreateLuaBindings(lua);
 
 	// Load the first level
 	LevelLoader loader;
-	lua.open_libraries(sol::lib::base, sol::lib::math);
+	lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os);
 	loader.LoadLevel(lua, registry, assetStore, renderer, 2);
 
 }
@@ -180,6 +184,7 @@ void Game::Update()
     registry->GetSystem<CollisionSystem>().Update();
     registry->GetSystem<ProjectileLifecycleSystem>().Update();
     registry->GetSystem<DamageSystem>().Update();
+    registry->GetSystem<ScriptSystem>().Update(deltaTime, SDL_GetTicks());
 }
 
 void Game::Render()

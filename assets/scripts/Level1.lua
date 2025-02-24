@@ -8,7 +8,7 @@ Level = {
         { type = "texture", id = "jungle-tilemap", file = "/home/pranav/del/SDLgamedev/assets/tilemaps/jungle.png" },
         { type = "texture", id = "chopper-texture", file = "/home/pranav/del/SDLgamedev/assets/images/chopper-spritesheet.png" },
         { type = "texture", id = "tank-texture", file = "/home/pranav/del/SDLgamedev/assets/images/tank-tiger-right.png" },
-        { type = "texture", id = "bullet-image", file = "/home/pranav/del/SDLgamedev/assets/images/bullet.png" },
+        { type = "texture", id = "bullet-texture", file = "/home/pranav/del/SDLgamedev/assets/images/bullet.png" },
         { type = "font", id = "pico8-font-5", file = "/home/pranav/del/SDLgamedev/assets/fonts/pico8.ttf", font_size = 5 },
         { type = "font", id = "pico8-font-10", file = "/home/pranav/del/SDLgamedev/assets/fonts/pico8.ttf", font_size = 10 },
         { type = "font", id = "chariot-font", file = "/home/pranav/del/SDLgamedev/assets/fonts/charriot.ttf", font_size = 14 }

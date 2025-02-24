@@ -1,3 +1,14 @@
+-- Load a different tilemap image depending on the current system time
+local current_system_hour = os.date("*t").hour
+
+local map_texture_asset_id
+
+if current_system_hour  >= 9 and current_system_hour <= 18 then
+		map_texture_asset_id = "tilemap-texture-day"
+else
+		map_texture_asset_id = "tilemap-texture-night"
+end
+
 -- Define a table with the start values of the first level
 Level = {
     ----------------------------------------------------
@@ -5,7 +16,8 @@ Level = {
     ----------------------------------------------------
     assets = {
         [0] =
-        { type = "texture", id = "tilemap-texture",             file = "/home/pranav/del/SDLgamedev/assets/tilemaps/jungle.png" },
+        { type = "texture", id = "tilemap-texture-night",             file = "/home/pranav/del/SDLgamedev/assets/tilemaps/jungle-night.png" },
+        { type = "texture", id = "tilemap-texture-day",             file = "/home/pranav/del/SDLgamedev/assets/tilemaps/jungle-night.png" },
         { type = "texture", id = "chopper-texture",             file = "/home/pranav/del/SDLgamedev/assets/images/chopper-green-spritesheet.png" },
         { type = "texture", id = "su27-texture",                file = "/home/pranav/del/SDLgamedev/assets/images/su27-spritesheet.png" },
         { type = "texture", id = "f22-texture",                 file = "/home/pranav/del/SDLgamedev/assets/images/f22-spritesheet.png" },
@@ -76,7 +88,8 @@ Level = {
         { type = "texture", id = "bullet-texture",              file = "/home/pranav/del/SDLgamedev/assets/images/bullet.png" },
         { type = "texture", id = "radar-texture",               file = "/home/pranav/del/SDLgamedev/assets/images/radar-spritesheet.png" },
         { type = "font"   , id = "pico8-font-5",                file = "/home/pranav/del/SDLgamedev/assets/fonts/pico8.ttf", font_size = 5 },
-        { type = "font"   , id = "pico8-font-10",               file = "/home/pranav/del/SDLgamedev/assets/fonts/pico8.ttf", font_size = 10 }
+        { type = "font"   , id = "pico8-font-10",               file = "/home/pranav/del/SDLgamedev/assets/fonts/pico8.ttf", font_size = 10 },
+        { type = "font"	, id = "chariot-font", file = "/home/pranav/del/SDLgamedev/assets/fonts/charriot.ttf", font_size = 14 }
     },
 
     ----------------------------------------------------
@@ -84,11 +97,11 @@ Level = {
     ----------------------------------------------------
     tilemap = {
         map_file = "/home/pranav/del/SDLgamedev/assets/tilemaps/jungle.map",
-        texture_asset_id = "tilemap-texture",
+        texture_asset_id = map_texture_asset_id,
         num_rows = 20,
         num_cols = 25,
         tile_size = 32,
-        scale = 2.0
+        scale = 3.0
     },
 
     ----------------------------------------------------
@@ -101,8 +114,8 @@ Level = {
             tag = "player",
             components = {
                 transform = {
-                    position = { x = 242, y = 110 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 355, y = 160 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 rigidbody = {
@@ -123,8 +136,8 @@ Level = {
                 },
                 boxcollider = {
                     width = 32,
-                    height = 25,
-                    offset = { x = 0, y = 5 }
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -137,10 +150,10 @@ Level = {
                     friendly = true
                 },
                 keyboard_controller = {
-                    up_velocity = { x = 0, y = -50 },
-                    right_velocity = { x = 50, y = 0 },
-                    down_velocity = { x = 0, y = 50 },
-                    left_velocity = { x = -50, y = 0 }
+                    up_velocity = { x = 0, y = -150 },
+                    right_velocity = { x = 150, y = 0 },
+                    down_velocity = { x = 0, y = 150 },
+                    left_velocity = { x = -150, y = 0 }
                 },
                 camera_follow = {
                     follow = true
@@ -151,8 +164,8 @@ Level = {
             -- Takeoff base
             components = {
                 transform = {
-                    position = { x = 240, y = 113 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 355, y = 165 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -167,8 +180,8 @@ Level = {
             -- Landing base
             components = {
                 transform = {
-                    position = { x = 1396, y = 493 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 2084, y = 735},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -205,15 +218,15 @@ Level = {
             -- Runway
             components = {
                 transform = {
-                    position = { x = 940, y = 65 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1410, y = 58 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 270.0, -- degrees
                 },
                 sprite = {
                     texture_asset_id = "runway-texture",
                     width = 21,
                     height = 191,
-                    z_index = 1
+                    z_index = 0
                 }
             }
         },
@@ -221,15 +234,15 @@ Level = {
             -- Runway
             components = {
                 transform = {
-                    position = { x = 470, y = 385 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 705, y = 578 },
+                    scale = { x = 1.5, y = 1.5 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
                     texture_asset_id = "runway-texture",
                     width = 21,
                     height = 191,
-                    z_index = 1
+                    z_index = 0
                 }
             }
         },
@@ -238,9 +251,12 @@ Level = {
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 200, y = 497 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 300, y = 736},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-tiger-right-texture",
@@ -249,15 +265,15 @@ Level = {
                     z_index = 2
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 18,
-                    offset = { x = 0, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 100, y = 0 },
+                    projectile_velocity = { x = 200, y = 0 },
                     projectile_duration = 2, -- seconds
                     repeat_frequency = 1, -- seconds
                     hit_percentage_damage = 20,
@@ -266,13 +282,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 2
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 785, y = 170 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1160, y = 225 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-panther-up-texture",
@@ -281,15 +300,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 18,
-                    offset = { x = 7, y = 10 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 0, y = -50 },
+                    projectile_velocity = { x = 0, y = -200 },
                     projectile_duration = 4, -- seconds
                     repeat_frequency = 2, -- seconds
                     hit_percentage_damage = 10,
@@ -298,13 +317,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 3
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 785, y = 250 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1160, y = 310 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-tiger-down-texture",
@@ -313,15 +335,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 20,
-                    height = 18,
-                    offset = { x = 5, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 0, y = 20 },
+                    projectile_velocity = { x = 0, y = 200 },
                     projectile_duration = 3, -- seconds
                     repeat_frequency = 3, -- seconds
                     hit_percentage_damage = 10,
@@ -330,13 +352,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 4
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 785, y = 350 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1160, y = 395 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-panther-left-texture",
@@ -345,15 +370,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 18,
-                    offset = { x = 5, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = -50, y = 0 },
+                    projectile_velocity = { x = -200, y = 0 },
                     projectile_duration = 3, -- seconds
                     repeat_frequency = 3, -- seconds
                     hit_percentage_damage = 10,
@@ -362,13 +387,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 5
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 570, y = 520 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 780, y = 770 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-panther-right-texture",
@@ -377,15 +405,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 18,
-                    offset = { x = 5, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 60, y = 0 },
+                    projectile_velocity = { x = 200, y = 0 },
                     projectile_duration = 4, -- seconds
                     repeat_frequency = 4, -- seconds
                     hit_percentage_damage = 10,
@@ -394,13 +422,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 6
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 570, y = 600 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 780, y = 835 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-panther-left-texture",
@@ -409,15 +440,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 18,
-                    offset = { x = 5, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = -60, y = 0 },
+                    projectile_velocity = { x = -200, y = 0 },
                     projectile_duration = 4, -- seconds
                     repeat_frequency = 4, -- seconds
                     hit_percentage_damage = 10,
@@ -426,13 +457,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 7
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1050, y = 170 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1560, y = 260 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-panther-right-texture",
@@ -441,15 +475,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 18,
-                    offset = { x = 5, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 60, y = 0 },
+                    projectile_velocity = { x = 200, y = 0 },
                     projectile_duration = 4, -- seconds
                     repeat_frequency = 4, -- seconds
                     hit_percentage_damage = 10,
@@ -458,13 +492,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 8
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1170, y = 116 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1735, y = 165 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-panther-down-texture",
@@ -473,15 +510,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 18,
-                    offset = { x = 8, y = 6 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 0, y = 40 },
+                    projectile_velocity = { x = 0, y = 200 },
                     projectile_duration = 2, -- seconds
                     repeat_frequency = 2, -- seconds
                     hit_percentage_damage = 10,
@@ -490,13 +527,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 9
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1380, y = 116 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 2050, y = 165 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-panther-down-texture",
@@ -505,15 +545,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 18,
-                    offset = { x = 8, y = 6 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 0, y = 40 },
+                    projectile_velocity = { x = 0, y = 200 },
                     projectile_duration = 2, -- seconds
                     repeat_frequency = 2, -- seconds
                     hit_percentage_damage = 10,
@@ -522,12 +562,12 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 10
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1265, y = 240 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1905, y = 350 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -539,13 +579,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 11
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1265, y = 290 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1905, y = 400 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-panther-left-texture",
@@ -554,15 +597,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 20,
-                    height = 17,
-                    offset = { x = 7, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = -40, y = 0 },
+                    projectile_velocity = { x = -200 , y = 0 },
                     projectile_duration = 2, -- seconds
                     repeat_frequency = 2, -- seconds
                     hit_percentage_damage = 10,
@@ -571,13 +614,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 12
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 640, y = 800 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 755, y = 1005 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-tiger-down-texture",
@@ -586,15 +632,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 18,
-                    height = 20,
-                    offset = { x = 7, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 0, y = 100 },
+                    projectile_velocity = { x = 0, y = 200 },
                     projectile_duration = 5, -- seconds
                     repeat_frequency = 5, -- seconds
                     hit_percentage_damage = 10,
@@ -603,13 +649,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 13
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 790, y = 745 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 945, y = 960},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-tiger-left-texture",
@@ -618,15 +667,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 18,
-                    offset = { x = 7, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = -60, y = 0 },
+                    projectile_velocity = { x = -200 , y = 0 },
                     projectile_duration = 10, -- seconds
                     repeat_frequency = 1, -- seconds
                     hit_percentage_damage = 10,
@@ -635,13 +684,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 14
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 980, y = 790 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1050, y = 1005 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-tiger-right-texture",
@@ -650,233 +702,9 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 18,
-                    offset = { x = 0, y = 7 }
-                },
-                health = {
-                    health_percentage = 100
-                },
-                projectile_emitter = {
-                    projectile_velocity = { x = 60, y = 0 },
-                    projectile_duration = 2, -- seconds
-                    repeat_frequency = 1, -- seconds
-                    hit_percentage_damage = 10,
-                    friendly = false
-                }
-            }
-        },
-        {
-            -- Tank
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 1070, y = 870 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "tank-panther-down-texture",
                     width = 32,
                     height = 32,
-                    z_index = 1
-                },
-                boxcollider = {
-                    width = 17,
-                    height = 20,
-                    offset = { x = 8, y = 4 }
-                },
-                health = {
-                    health_percentage = 100
-                },
-                projectile_emitter = {
-                    projectile_velocity = { x = 0, y = 100 },
-                    projectile_duration = 4, -- seconds
-                    repeat_frequency = 2, -- seconds
-                    hit_percentage_damage = 10,
-                    friendly = false
-                }
-            }
-        },
-        {
-            -- Tank
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 1190, y = 790 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "tank-panther-up-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-                boxcollider = {
-                    width = 17,
-                    height = 20,
-                    offset = { x = 7, y = 8 }
-                },
-                health = {
-                    health_percentage = 100
-                },
-                projectile_emitter = {
-                    projectile_velocity = { x = 0, y = -200 },
-                    projectile_duration = 2, -- seconds
-                    repeat_frequency = 1, -- seconds
-                    hit_percentage_damage = 10,
-                    friendly = false
-                }
-            }
-        },
-        {
-            -- Tank
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 1210, y = 790 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "tank-panther-up-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-                boxcollider = {
-                    width = 17,
-                    height = 20,
-                    offset = { x = 7, y = 8 }
-                },
-                health = {
-                    health_percentage = 100
-                },
-                projectile_emitter = {
-                    projectile_velocity = { x = 0, y = -200 },
-                    projectile_duration = 2, -- seconds
-                    repeat_frequency = 1, -- seconds
-                    hit_percentage_damage = 10,
-                    friendly = false
-                }
-            }
-        },
-        {
-            -- Tank
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 1230, y = 790 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "tank-panther-up-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-                boxcollider = {
-                    width = 17,
-                    height = 20,
-                    offset = { x = 7, y = 8 }
-                },
-                health = {
-                    health_percentage = 100
-                },
-                projectile_emitter = {
-                    projectile_velocity = { x = 0, y = -200 },
-                    projectile_duration = 2, -- seconds
-                    repeat_frequency = 1, -- seconds
-                    hit_percentage_damage = 10,
-                    friendly = false
-                }
-            }
-        },
-        {
-            -- Tank
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 1250, y = 790 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "tank-panther-up-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-                boxcollider = {
-                    width = 17,
-                    height = 20,
-                    offset = { x = 7, y = 8 }
-                },
-                health = {
-                    health_percentage = 100
-                },
-                projectile_emitter = {
-                    projectile_velocity = { x = 0, y = -200 },
-                    projectile_duration = 2, -- seconds
-                    repeat_frequency = 1, -- seconds
-                    hit_percentage_damage = 10,
-                    friendly = false
-                }
-            }
-        },
-        {
-            -- Tank
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 1000, y = 445 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "tank-panther-up-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-                boxcollider = {
-                    width = 17,
-                    height = 20,
-                    offset = { x = 7, y = 8 }
-                },
-                health = {
-                    health_percentage = 100
-                },
-                projectile_emitter = {
-                    projectile_velocity = { x = 0, y = -200 },
-                    projectile_duration = 2, -- seconds
-                    repeat_frequency = 1, -- seconds
-                    hit_percentage_damage = 10,
-                    friendly = false
-                }
-            }
-        },
-        {
-            -- Tank
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 1426, y = 760 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "tank-panther-right-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-                boxcollider = {
-                    width = 22,
-                    height = 18,
-                    offset = { x = 5, y = 7 }
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -891,13 +719,261 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 15
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1423, y = 835 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1600 , y = 1280 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
+                },
+                sprite = {
+                    texture_asset_id = "tank-panther-down-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 1
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0 , y = 0}
+                },
+                health = {
+                    health_percentage = 100
+                },
+                projectile_emitter = {
+                    projectile_velocity = { x = 0, y = 100 },
+                    projectile_duration = 4, -- seconds
+                    repeat_frequency = 2, -- seconds
+                    hit_percentage_damage = 10,
+                    friendly = false
+                }
+            }
+        },
+        {
+            -- Tank 16
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 1160, y = 1005},
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
+                },
+                sprite = {
+                    texture_asset_id = "tank-panther-up-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 1
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
+                },
+                health = {
+                    health_percentage = 100
+                },
+                projectile_emitter = {
+                    projectile_velocity = { x = 0, y = -200 },
+                    projectile_duration = 2, -- seconds
+                    repeat_frequency = 1, -- seconds
+                    hit_percentage_damage = 10,
+                    friendly = false
+                }
+            }
+        },
+        {
+            -- Tank 17
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 1200, y = 1005},
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
+                },
+                sprite = {
+                    texture_asset_id = "tank-panther-up-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 1
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
+                },
+                health = {
+                    health_percentage = 100
+                },
+                projectile_emitter = {
+                    projectile_velocity = { x = 0, y = -200 },
+                    projectile_duration = 2, -- seconds
+                    repeat_frequency = 1, -- seconds
+                    hit_percentage_damage = 10,
+                    friendly = false
+                }
+            }
+        },
+        {
+            -- Tank 18
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 1240, y = 1005},
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
+                },
+                sprite = {
+                    texture_asset_id = "tank-panther-up-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 1
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
+                },
+                health = {
+                    health_percentage = 100
+                },
+                projectile_emitter = {
+                    projectile_velocity = { x = 0, y = -200 },
+                    projectile_duration = 2, -- seconds
+                    repeat_frequency = 1, -- seconds
+                    hit_percentage_damage = 10,
+                    friendly = false
+                }
+            }
+        },
+        {
+            -- Tank 19
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 1280, y = 1005},
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
+                },
+                sprite = {
+                    texture_asset_id = "tank-panther-up-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 1
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
+                },
+                health = {
+                    health_percentage = 100
+                },
+                projectile_emitter = {
+                    projectile_velocity = { x = 0, y = -200 },
+                    projectile_duration = 2, -- seconds
+                    repeat_frequency = 1, -- seconds
+                    hit_percentage_damage = 10,
+                    friendly = false
+                }
+            }
+        },
+        {
+            -- Tank 20
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 1495 , y = 660 },
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
+                },
+                sprite = {
+                    texture_asset_id = "tank-panther-up-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 1
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
+                },
+                health = {
+                    health_percentage = 100
+                },
+                projectile_emitter = {
+                    projectile_velocity = { x = 0, y = -200 },
+                    projectile_duration = 2, -- seconds
+                    repeat_frequency = 1, -- seconds
+                    hit_percentage_damage = 10,
+                    friendly = false
+                }
+            }
+        },
+        {
+            -- Tank 21
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 2250 , y = 1100 },
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
+                },
+                sprite = {
+                    texture_asset_id = "tank-panther-right-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 1
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
+                },
+                health = {
+                    health_percentage = 100
+                },
+                projectile_emitter = {
+                    projectile_velocity = { x = 200, y = 0 },
+                    projectile_duration = 2, -- seconds
+                    repeat_frequency = 1, -- seconds
+                    hit_percentage_damage = 10,
+                    friendly = false
+                }
+            }
+        },
+        {
+            -- Tank 22
+            group = "enemies",
+            components = {
+                transform = {
+					position = { x = 2250 , y = 1200 },
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-tiger-left-texture",
@@ -906,9 +982,9 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 18,
-                    offset = { x = 7, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -923,13 +999,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 23
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1450, y = 300 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 2155, y = 420},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-tiger-down-texture",
@@ -938,8 +1017,8 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 19,
-                    height = 20,
+                    width = 32,
+                    height = 32,
                     offset = { x = 6, y = 7 }
                 },
                 health = {
@@ -955,13 +1034,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 24
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 195, y = 980 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 290, y = 1495},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-tiger-up-texture",
@@ -970,15 +1052,15 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 18,
-                    height = 25,
-                    offset = { x = 7, y = 7 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 0, y = -100 },
+                    projectile_velocity = { x = 0, y = -200 },
                     projectile_duration = 2, -- seconds
                     repeat_frequency = 1, -- seconds
                     hit_percentage_damage = 10,
@@ -987,13 +1069,16 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 25
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 110, y = 1125 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 150, y = 1685 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "tank-panther-down-texture",
@@ -1002,9 +1087,9 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 20,
-                    offset = { x = 8, y = 4 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -1019,12 +1104,12 @@ Level = {
             }
         },
         {
-            -- Tank
+            -- Tank 26
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1395, y = 540 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 2095 , y = 820},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1036,12 +1121,87 @@ Level = {
             }
         },
         {
-            -- Truck
+            -- Truck 1
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 113, y = 580 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 160, y = 985},
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                sprite = {
+                    texture_asset_id = "truck-ford-down-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 1
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0}
+                },
+                health = {
+                    health_percentage = 100
+                }
+            }
+        },
+        {
+            -- Truck 2
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 75, y = 1505 },
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                sprite = {
+                    texture_asset_id = "truck-ford-down-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 1
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
+                },
+                health = {
+                    health_percentage = 100
+                }
+            }
+        },
+        {
+            -- Truck 3
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 145, y = 1505 },
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                sprite = {
+                    texture_asset_id = "truck-ford-down-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 1
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 32}
+                },
+                health = {
+                    health_percentage = 100
+                }
+            }
+        },
+        {
+            -- Truck 4
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 215, y = 1505 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1061,12 +1221,12 @@ Level = {
             }
         },
         {
-            -- Truck
+            -- Truck 5
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 180, y = 1045 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 740, y = 950},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1076,9 +1236,9 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 12,
-                    height = 25,
-                    offset = { x = 10, y = 2 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -1086,12 +1246,12 @@ Level = {
             }
         },
         {
-            -- Truck
+            -- Truck 6
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 195, y = 1055 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 790, y = 980},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1101,34 +1261,9 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 12,
-                    height = 25,
-                    offset = { x = 10, y = 2 }
-                },
-                health = {
-                    health_percentage = 100
-                }
-            }
-        },
-        {
-            -- Truck
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 210, y = 1065 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "truck-ford-down-texture",
                     width = 32,
                     height = 32,
-                    z_index = 1
-                },
-                boxcollider = {
-                    width = 12,
-                    height = 25,
-                    offset = { x = 10, y = 2 }
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -1136,62 +1271,12 @@ Level = {
             }
         },
         {
-            -- Truck
+            -- Truck 7
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 545, y = 660 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "truck-ford-down-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-                boxcollider = {
-                    width = 12,
-                    height = 25,
-                    offset = { x = 10, y = 2 }
-                },
-                health = {
-                    health_percentage = 100
-                }
-            }
-        },
-        {
-            -- Truck
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 560, y = 670 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "truck-ford-down-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-                boxcollider = {
-                    width = 12,
-                    height = 25,
-                    offset = { x = 10, y = 2 }
-                },
-                health = {
-                    health_percentage = 100
-                }
-            }
-        },
-        {
-            -- Truck
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 1360, y = 880 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 2000, y = 1280 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1201,9 +1286,9 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 12,
-                    height = 20,
-                    offset = { x = 10, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -1211,12 +1296,12 @@ Level = {
             }
         },
         {
-            -- Truck
+            -- Truck 8
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1380, y = 880 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 2040, y = 1280 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1226,9 +1311,9 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 12,
-                    height = 20,
-                    offset = { x = 10, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -1236,12 +1321,12 @@ Level = {
             }
         },
         {
-            -- Truck
+            -- Truck 9
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1400, y = 880 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 2080, y = 1280 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1251,9 +1336,9 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 12,
-                    height = 20,
-                    offset = { x = 10, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -1261,12 +1346,12 @@ Level = {
             }
         },
         {
-            -- Truck
+            -- Truck 10
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1505, y = 780 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 2160, y = 685},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1276,9 +1361,9 @@ Level = {
                     z_index = 1
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 16,
-                    offset = { x = 3, y = 10 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -1286,12 +1371,12 @@ Level = {
             }
         },
         {
-            -- Truck
+            -- Truck 11
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1515, y = 790 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 2160, y = 740 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1301,9 +1386,9 @@ Level = {
                     z_index = 2
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 16,
-                    offset = { x = 3, y = 10 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -1311,13 +1396,94 @@ Level = {
             }
         },
         {
-            -- SAM Tank
+            -- SAM Tank 1
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 495, y = 380 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 745, y = 580},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                sprite = {
+                    texture_asset_id = "sam-tank-left-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 2
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
+                },
+                animation = {
+                    num_frames = 2,
+                    speed_rate = 2 -- fps
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
+                },
+                health = {
+                    health_percentage = 100
+                },
+                projectile_emitter = {
+                    projectile_velocity = { x = -200, y = -200 },
+                    projectile_duration = 5, -- seconds
+                    repeat_frequency = 2, -- seconds
+                    hit_percentage_damage = 5,
+                    friendly = false
+                }
+            }
+        },
+        {
+            -- SAM Tank 2
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 745, y = 640},
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                sprite = {
+                    texture_asset_id = "sam-tank-left-texture",
+                    width = 32,
+                    height = 32,
+                    z_index = 2
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
+                },
+                animation = {
+                    num_frames = 2,
+                    speed_rate = 2 -- fps
+                },
+                boxcollider = {
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
+                },
+                health = {
+                    health_percentage = 100
+                },
+                projectile_emitter = {
+                    projectile_velocity = { x = -200, y = -200 },
+                    projectile_duration = 5, -- seconds
+                    repeat_frequency = 2, -- seconds
+                    hit_percentage_damage = 5,
+                    friendly = false
+                }
+            }
+        },
+        {
+            -- SAM Tank 3
+            group = "enemies",
+            components = {
+                transform = {
+                    position = { x = 1900, y = 300},
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "sam-tank-left-texture",
@@ -1330,16 +1496,16 @@ Level = {
                     speed_rate = 2 -- fps
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 15,
-                    offset = { x = 8, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = -50, y = -50 },
-                    projectile_duration = 3, -- seconds
+                    projectile_velocity = { x = -150, y = -125 },
+                    projectile_duration = 2, -- seconds
                     repeat_frequency = 2, -- seconds
                     hit_percentage_damage = 5,
                     friendly = false
@@ -1347,13 +1513,16 @@ Level = {
             }
         },
         {
-            -- SAM Tank
+            -- SAM Tank 4
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 495, y = 410 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1410, y = 835},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "sam-tank-left-texture",
@@ -1366,16 +1535,16 @@ Level = {
                     speed_rate = 2 -- fps
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 15,
-                    offset = { x = 8, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 32 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = -50, y = -50 },
-                    projectile_duration = 3, -- seconds
+                    projectile_velocity = { x = -200, y = -120 },
+                    projectile_duration = 1, -- seconds
                     repeat_frequency = 2, -- seconds
                     hit_percentage_damage = 5,
                     friendly = false
@@ -1383,85 +1552,16 @@ Level = {
             }
         },
         {
-            -- SAM Tank
+            -- SAM Truck 1
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1290, y = 115 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 160, y = 1120},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
-                sprite = {
-                    texture_asset_id = "sam-tank-left-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 2
-                },
-                animation = {
-                    num_frames = 2,
-                    speed_rate = 2 -- fps
-                },
-                boxcollider = {
-                    width = 17,
-                    height = 15,
-                    offset = { x = 8, y = 8 }
-                },
-                health = {
-                    health_percentage = 100
-                },
-                projectile_emitter = {
-                    projectile_velocity = { x = -100, y = -75 },
-                    projectile_duration = 2, -- seconds
-                    repeat_frequency = 2, -- seconds
-                    hit_percentage_damage = 5,
-                    friendly = false
-                }
-            }
-        },
-        {
-            -- SAM Tank
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 935, y = 557 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "sam-tank-left-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 2
-                },
-                animation = {
-                    num_frames = 2,
-                    speed_rate = 2 -- fps
-                },
-                boxcollider = {
-                    width = 17,
-                    height = 15,
-                    offset = { x = 8, y = 8 }
-                },
-                health = {
-                    health_percentage = 100
-                },
-                projectile_emitter = {
-                    projectile_velocity = { x = -100, y = -60 },
-                    projectile_duration = 2, -- seconds
-                    repeat_frequency = 2, -- seconds
-                    hit_percentage_damage = 5,
-                    friendly = false
-                }
-            }
-        },
-        {
-            -- SAM Truck
-            group = "enemies",
-            components = {
-                transform = {
-                    position = { x = 114, y = 700 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "sam-truck-right-texture",
@@ -1470,16 +1570,16 @@ Level = {
                     z_index = 2
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 15,
-                    offset = { x = 8, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 50, y = -50 },
-                    projectile_duration = 2, -- seconds
+                    projectile_velocity = { x = 150, y = -150 },
+                    projectile_duration = 5, -- seconds
                     repeat_frequency = 1, -- seconds
                     hit_percentage_damage = 5,
                     friendly = false
@@ -1487,13 +1587,16 @@ Level = {
             }
         },
         {
-            -- SAM Truck
+            -- SAM Truck 2 
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 114, y = 720 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 160, y = 1170},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "sam-truck-right-texture",
@@ -1502,16 +1605,16 @@ Level = {
                     z_index = 2
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 15,
-                    offset = { x = 8, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 50, y = -50 },
-                    projectile_duration = 2, -- seconds
+                    projectile_velocity = { x = 150, y = -150 },
+                    projectile_duration = 5, -- seconds
                     repeat_frequency = 1, -- seconds
                     hit_percentage_damage = 5,
                     friendly = false
@@ -1519,13 +1622,16 @@ Level = {
             }
         },
         {
-            -- SAM Truck
+            -- SAM Truck 3
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 116, y = 499 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 160, y = 750},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "sam-truck-right-texture",
@@ -1534,16 +1640,16 @@ Level = {
                     z_index = 2
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 15,
-                    offset = { x = 8, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 50, y = -70 },
-                    projectile_duration = 2, -- seconds
+                    projectile_velocity = { x = 150, y = -170 },
+                    projectile_duration = 5, -- seconds
                     repeat_frequency = 1, -- seconds
                     hit_percentage_damage = 5,
                     friendly = false
@@ -1551,13 +1657,16 @@ Level = {
             }
         },
         {
-            -- SAM Truck
+            -- SAM Truck 4
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1454, y = 215 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1690, y = 735},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "sam-truck-right-texture",
@@ -1566,15 +1675,15 @@ Level = {
                     z_index = 2
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 15,
-                    offset = { x = 8, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 50, y = -70 },
+                    projectile_velocity = { x = 150, y = -170 },
                     projectile_duration = 2, -- seconds
                     repeat_frequency = 1, -- seconds
                     hit_percentage_damage = 5,
@@ -1583,13 +1692,16 @@ Level = {
             }
         },
         {
-            -- SAM Truck
+            -- SAM Truck 5
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1454, y = 231 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1690, y = 775},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "sam-truck-right-texture",
@@ -1598,30 +1710,33 @@ Level = {
                     z_index = 2
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 15,
-                    offset = { x = 8, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 50, y = -70 },
+                    projectile_velocity = { x = 150, y = -170 },
                     projectile_duration = 2, -- seconds
                     repeat_frequency = 1, -- seconds
                     hit_percentage_damage = 5,
                     friendly = false
                 }
-            }
+			}
         },
         {
-            -- SAM Truck
+            -- SAM Truck 5
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 1454, y = 247 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1690, y = 815},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
+                },
+                rigidbody = {
+                    velocity = { x = 0.0, y = 0.0 }
                 },
                 sprite = {
                     texture_asset_id = "sam-truck-right-texture",
@@ -1630,60 +1745,28 @@ Level = {
                     z_index = 2
                 },
                 boxcollider = {
-                    width = 17,
-                    height = 15,
-                    offset = { x = 8, y = 8 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
                 },
                 projectile_emitter = {
-                    projectile_velocity = { x = 50, y = -70 },
+                    projectile_velocity = { x = 150, y = -170 },
                     projectile_duration = 2, -- seconds
                     repeat_frequency = 1, -- seconds
                     hit_percentage_damage = 5,
                     friendly = false
                 }
-            }
+			}
         },
         {
             -- Vegetation
             components = {
                 transform = {
-                    position = { x = 115, y = 633 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "tree5-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Vegetation
-            components = {
-                transform = {
-                    position = { x = 117, y = 650 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "tree5-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Vegetation
-            components = {
-                transform = {
-                    position = { x = 318, y = 490 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 234, y = 746},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1698,8 +1781,8 @@ Level = {
             -- Vegetation
             components = {
                 transform = {
-                    position = { x = 668, y = 526 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 655, y = 606},
+                    scale = { x = 1.5, y = 1.5 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1715,7 +1798,7 @@ Level = {
             components = {
                 transform = {
                     position = { x = 1018, y = 738 },
-                    scale = { x = 1.0, y = 1.0 },
+                    scale = { x = 3.0, y = 3.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1731,7 +1814,7 @@ Level = {
             components = {
                 transform = {
                     position = { x = 1034, y = 738 },
-                    scale = { x = 1.0, y = 1.0 },
+                    scale = { x = 3.0, y = 3.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1747,7 +1830,7 @@ Level = {
             components = {
                 transform = {
                     position = { x = 1028, y = 745 },
-                    scale = { x = 1.0, y = 1.0 },
+                    scale = { x = 3.0, y = 3.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1762,8 +1845,8 @@ Level = {
             -- Vegetation
             components = {
                 transform = {
-                    position = { x = 1390, y = 440 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1278, y = 528},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1778,8 +1861,8 @@ Level = {
             -- Vegetation
             components = {
                 transform = {
-                    position = { x = 1400, y = 445 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1301, y = 621},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1794,8 +1877,8 @@ Level = {
             -- Vegetation
             components = {
                 transform = {
-                    position = { x = 1365, y = 290 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1276, y = 275},
+                    scale = { x = 1.5, y = 1.5 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1811,7 +1894,7 @@ Level = {
             components = {
                 transform = {
                     position = { x = 669, y = 549 },
-                    scale = { x = 1.0, y = 1.0 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1842,8 +1925,8 @@ Level = {
             -- Obstacles
             components = {
                 transform = {
-                    position = { x = 315, y = 505 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 527, y = 754},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -1858,7 +1941,7 @@ Level = {
             -- Obstacles
             components = {
                 transform = {
-                    position = { x = 330, y = 507 },
+                    position = { x = 520, y = 745},
                     scale = { x = 1.0, y = 1.0 },
                     rotation = 0.0, -- degrees
                 },
@@ -1870,332 +1953,12 @@ Level = {
                 },
             }
         },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 438, y = 390 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 449, y = 408 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 431, y = 416 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 940, y = 695 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 955, y = 705 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1085, y = 507 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1075, y = 527 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1075, y = 547 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1085, y = 567 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1355, y = 449 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles2-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1430, y = 446 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles2-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1435, y = 195 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1425, y = 215 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1425, y = 235 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1425, y = 255 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1435, y = 275 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 2
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1360, y = 310 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1380, y = 312 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles7-texture",
-                    width = 16,
-                    height = 16,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1330, y = 212 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles1-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Obstacles
-            components = {
-                transform = {
-                    position = { x = 1360, y = 232 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "obstacles1-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
+		{
             -- Army
             components = {
                 transform = {
-                    position = { x = 630, y = 405 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 947, y = 569},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2210,8 +1973,8 @@ Level = {
             -- Army
             components = {
                 transform = {
-                    position = { x = 497, y = 450 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 955, y = 652},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2226,8 +1989,8 @@ Level = {
             -- Army
             components = {
                 transform = {
-                    position = { x = 572, y = 560 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1018, y = 833},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2242,8 +2005,8 @@ Level = {
             -- Army
             components = {
                 transform = {
-                    position = { x = 114, y = 980 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1332, y = 727},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2258,8 +2021,8 @@ Level = {
             -- Army
             components = {
                 transform = {
-                    position = { x = 114, y = 1030 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 943, y = 1196},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2274,8 +2037,8 @@ Level = {
             -- Army
             components = {
                 transform = {
-                    position = { x = 883, y = 490 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1495, y = 1144},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2290,8 +2053,8 @@ Level = {
             -- Army
             components = {
                 transform = {
-                    position = { x = 113, y = 851 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 278, y = 1662},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2303,172 +2066,12 @@ Level = {
             }
         },
         {
-            -- Army
-            components = {
-                transform = {
-                    position = { x = 750, y = 630 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "army-walk-left-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Army
-            components = {
-                transform = {
-                    position = { x = 800, y = 630 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "army-walk-right-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Army
-            components = {
-                transform = {
-                    position = { x = 856, y = 115 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "army-gun-down-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Army
-            components = {
-                transform = {
-                    position = { x = 900, y = 115 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "army-gun-up-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Army
-            components = {
-                transform = {
-                    position = { x = 1117, y = 530 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "army-walk-right-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Army
-            components = {
-                transform = {
-                    position = { x = 755, y = 440 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "army-gun-down-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Army
-            components = {
-                transform = {
-                    position = { x = 810, y = 440 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "army-gun-down-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Army
-            components = {
-                transform = {
-                    position = { x = 1390, y = 690 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "army-walk-killed-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Army
-            components = {
-                transform = {
-                    position = { x = 1425, y = 690 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "army-walk-killed-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Army
-            components = {
-                transform = {
-                    position = { x = 1465, y = 690 },
-                    scale = { x = 1.0, y = 1.0 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "army-walk-killed-texture",
-                    width = 32,
-                    height = 32,
-                    z_index = 1
-                },
-            }
-        },
-        {
             -- Boat
             components = {
                 transform = {
-                    position = { x = 80, y = 520 },
-                    scale = { x = 0.8, y = 0.8 },
-                    rotation = 0.0, -- degrees
+                    position = { x = 267, y = 573},
+                    scale = { x = 2.0, y = 2.0 },
+                    rotation = 90.0, -- degrees
                 },
                 sprite = {
                     texture_asset_id = "boat-texture",
@@ -2483,39 +2086,7 @@ Level = {
             components = {
                 transform = {
                     position = { x = 80, y = 790 },
-                    scale = { x = 0.8, y = 0.8 },
-                    rotation = 0.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "boat-texture",
-                    width = 21,
-                    height = 126,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Boat
-            components = {
-                transform = {
-                    position = { x = 345, y = 423 },
-                    scale = { x = 0.8, y = 0.8 },
-                    rotation = 270.0, -- degrees
-                },
-                sprite = {
-                    texture_asset_id = "boat-texture",
-                    width = 21,
-                    height = 126,
-                    z_index = 1
-                },
-            }
-        },
-        {
-            -- Boat
-            components = {
-                transform = {
-                    position = { x = 1510, y = 460 },
-                    scale = { x = 0.8, y = 0.8 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2530,8 +2101,8 @@ Level = {
             -- Carrier
             components = {
                 transform = {
-                    position = { x = 670, y = 150 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 970, y = 150 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2547,7 +2118,7 @@ Level = {
             components = {
                 transform = {
                     position = { x = 300, y = 975 },
-                    scale = { x = 1.0, y = 1.0 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2563,8 +2134,8 @@ Level = {
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 688, y = 165 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 1018, y = 265 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2578,9 +2149,9 @@ Level = {
                     speed_rate = 10 -- fps
                 },
                 boxcollider = {
-                    width = 20,
-                    height = 25,
-                    offset = { x = 5, y = 5}
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0}
                 },
                 health = {
                     health_percentage = 100
@@ -2592,8 +2163,8 @@ Level = {
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 685, y = 300 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 975, y = 300 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = -10.0, -- degrees
                 },
                 rigidbody = {
@@ -2610,9 +2181,9 @@ Level = {
                     speed_rate = 10 -- fps
                 },
                 boxcollider = {
-                    width = 25,
-                    height = 30,
-                    offset = { x = 5, y = 0 }
+                    width = 32,
+                    height = 32,
+                    offset = { x = 0, y = 0 }
                 },
                 health = {
                     health_percentage = 100
@@ -2624,8 +2195,8 @@ Level = {
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 464, y = 520 },
-                    scale = { x = 1.0, y = 1.0 },
+                    position = { x = 571, y = 664},
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2654,7 +2225,7 @@ Level = {
             components = {
                 transform = {
                     position = { x = 1000, y = 143 },
-                    scale = { x = 1.0, y = 1.0 },
+                    scale = { x = 2.0, y = 2.0 },
                     rotation = -90.0, -- degrees
                 },
                 rigidbody = {
@@ -2685,8 +2256,8 @@ Level = {
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 920, y = 179 },
-                    scale = { x = 0.8, y = 0.8 },
+                    position = { x = 1052, y = 600},
+                    scale = { x = 1.5, y = 1.5 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2706,8 +2277,8 @@ Level = {
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 950, y = 179 },
-                    scale = { x = 0.8, y = 0.8 },
+                    position = { x = 1112, y = 600},
+                    scale = { x = 1.5, y = 1.5 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2727,8 +2298,8 @@ Level = {
             group = "enemies",
             components = {
                 transform = {
-                    position = { x = 980, y = 179 },
-                    scale = { x = 0.8, y = 0.8 },
+                    position = { x = 1172, y = 600},
+                    scale = { x = 1.5, y = 1.5 },
                     rotation = 0.0, -- degrees
                 },
                 sprite = {
@@ -2743,7 +2314,6 @@ Level = {
                 }
             }
         },
-        --[[
         {
             -- SU-27 fighter jet
             group = "enemies",
@@ -2780,11 +2350,10 @@ Level = {
                     hit_percentage_damage = 10,
                     friendly = false
                 },
+				--[[
                 on_update_script = {
                     [0] =
                     function(entity, delta_time, ellapsed_time)
-                        -- print("Executing the SU-27 fighter jet Lua script!")
-
                         -- this function makes the fighter jet move up and down the map shooting projectiles
                         local current_position_x, current_position_y = get_position(entity)
                         local current_velocity_x, current_velocity_y = get_velocity(entity)
@@ -2806,6 +2375,7 @@ Level = {
                         end
                     end
                 }
+				--]]
             }
         },
         {
@@ -2847,8 +2417,6 @@ Level = {
                 on_update_script = {
                     [0] =
                     function(entity, delta_time, ellapsed_time)
-                        -- print("Executing BF-109 Lua script!")
-
                         -- change the position of the the airplane to follow a sine wave movement
                         local new_x = ellapsed_time * 0.09
                         local new_y = 200 + (math.sin(ellapsed_time * 0.001) * 50)
@@ -2857,7 +2425,6 @@ Level = {
                 }
             }
         }
-        --]]
     }
 }
 

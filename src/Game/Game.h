@@ -12,6 +12,7 @@
 #include "../Components/SpriteComponent.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/TextLabelComponent.h"
+#include "../Components/ScriptComponent.h"
 #include "../ECS/ECS.h"
 #include "../Events/Event.h"
 #include "../Logger/Logger.h"
@@ -28,6 +29,7 @@
 #include "../Systems/RenderTextSystem.h"
 #include "../Systems/RenderHealthStatus.h"
 #include "../Systems/RenderGUISystem.h"
+#include "../Systems/ScriptSystem.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <imgui/imgui.h>

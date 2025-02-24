@@ -88,6 +88,7 @@ class ProjectileEmitSystem : public System
 		{
 			for (auto entity : GetSystemEntities())
 			{
+
 				auto &projectileEmitter = entity->GetComponent<ProjectileEmitterComponent>();
 				auto &transform = entity->GetComponent<TransformComponent>();
 				auto &rigidbody = entity->GetComponent<RigidBodyComponent>();
@@ -120,7 +121,6 @@ class ProjectileEmitSystem : public System
 							projectilePosition.y += (transform.scale.y * sprite.height / 2);
 						}
 
-						Logger::Log("Creating projectile for tank");
 						// Add a new projectile entity to the registry
 						std::shared_ptr<Entity> projectile = registry->CreateEntity();
 						projectile->Group("projectiles");
@@ -128,7 +128,7 @@ class ProjectileEmitSystem : public System
 						(projectilePosition, glm::vec2(2.0, 2.0), 0);
 						projectile->AddComponent<RigidBodyComponent>
 						(projectileEmitter.projectileVelocity);
-						projectile->AddComponent<SpriteComponent>("bullet-texture", 4, 4, 1, false);
+						projectile->AddComponent<SpriteComponent>("bullet-texture", 4, 4, 2, false);
 						projectile->AddComponent<BoxColliderComponent>(4, 4);
 						projectile->AddComponent<ProjectileComponent>
 						(
