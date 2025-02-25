@@ -9,7 +9,8 @@ SRC_FILES = ./src/*.cpp \
             ./src/ECS/*.cpp \
             ./src/AssetStore/*.cpp \
 			./libs/imgui/*.cpp \
-			./src/Systems/SetEntityPosition.cpp
+			./src/Systems/LuaBindingFunctions.cpp
+
 LINKER_FILES = -l SDL2 -l SDL2_image -l SDL2_ttf -l lua5.4
 OBJ_NAME = gameengine
 
