@@ -145,7 +145,7 @@ Since **Warhammer** is released as a fully compiled game, you can simply downloa
 ---
 ## Create Your Own Levels
 
-The Warhammer Game Engine is designed to be flexible, and we encourage users to create and share their own levels. Since levels are defined using Lua scripting, creating a custom level is as simple as editing the Lua files.  
+The Warhammer Game Engine is designed to be flexible, and I encourage users to create and share their own levels. Since levels are defined using Lua scripting, creating a custom level is as simple as editing the Lua files.  
   
 **How to Contribute:**
 - Create a New Level: Modify or create your own Lua scripts to define new levels.
