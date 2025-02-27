@@ -1,5 +1,6 @@
-gameengine
+linux_build
+windows_build
 .ccls-cache
 compile_commands.json
 .clang-format
-./imgui.ini
+imgui.ini

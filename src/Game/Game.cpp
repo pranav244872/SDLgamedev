@@ -41,7 +41,7 @@ void Game::Initialize()
     windowHeight = displayMode.h;
     window = SDL_CreateWindow(
         NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth,
-        windowHeight, SDL_WINDOW_FULLSCREEN
+        windowHeight, SDL_WINDOW_RESIZABLE
     );
     if (!window)
     {
@@ -143,7 +143,9 @@ void Game::Setup()
 	// Load the first level
 	LevelLoader loader;
 	lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os);
-	loader.LoadLevel(lua, registry, assetStore, renderer, 2);
+	lua.script_file("../assets/scripts/LevelLoader.lua");
+	int level = lua["LoadLevel"];
+	loader.LoadLevel(lua, registry, assetStore, renderer, level);
 
 }
 

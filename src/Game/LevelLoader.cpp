@@ -103,7 +103,7 @@ void LevelLoader::LoadLevel
     ////////////////////////////////////////////////////////////////////////////////
     // Load and validate the Lua script
     ////////////////////////////////////////////////////////////////////////////////
-    std::string scriptPath = "/home/pranav/del/SDLgamedev/assets/scripts/Level" + std::to_string(levelNumber) + ".lua";
+    std::string scriptPath = "../assets/scripts/Level" + std::to_string(levelNumber) + ".lua";
     Logger::Log("Loading Lua script: " + scriptPath);
 
     sol::load_result script = lua.load_file(scriptPath);
